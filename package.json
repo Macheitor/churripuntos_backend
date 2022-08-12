@@ -1,0 +1,36 @@
+{
+  "name": "churripuntos",
+  "version": "1.0.0",
+  "description": "churripuntos",
+  "main": "server.js",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "scripts": {
+    "test": "nodemon server.js", 
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicmape/churripuntos.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "javascript",
+    "html",
+    "css",
+    "mongodb"
+  ],
+  "author": "Victor Machado",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vicmape/churripuntos/issues"
+  },
+  "homepage": "https://github.com/vicmape/churripuntos#readme"
+}
