@@ -1,0 +1,34 @@
+require('dotenv').config()
+
+const Users = require('mongoose').model("Users")
+const jwt = require('jsonwebtoken')
+
+module.exports = async (req, res) => {
+
+    try {
+        const username = req.body.username;
+        const email = req.body.email;
+
+        const userEntry = await Users.findOne({$or: [{username}, {email}]});
+
+        const user = {
+            userId: userEntry._id,
+            username: userEntry.username,
+            email: userEntry.email
+        }
+
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+
+        res.status(201).send({
+            status: "success", 
+            user,
+            accessToken
+        });
+
+     } catch (err) {
+        res.status(500).send({
+            status: 'error',
+            message: err.message
+        })
+    }
+}
