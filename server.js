@@ -12,6 +12,7 @@ app.get('/', (req, res) =>{
 
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'));
+app.use('/spaces', require('./routes/spaces'));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running at port ${PORT}`));

@@ -13,16 +13,19 @@ content-type: application/json
 
 {
     "username": "test",
-    "password": "1234"
-}
-###
-POST http://localhost:8080/login
-content-type: application/json
-
-{
     "email": "victor.machado.perez@gmail.com",
     "password": "1234"
 }
 ###
+GET http://localhost:8080/spaces
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
 
-GET http://localhost:8080/
+###
+POST http://localhost:8080/spaces
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "spacename": "space2"
+}
+###
