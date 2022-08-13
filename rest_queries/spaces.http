@@ -10,12 +10,27 @@ content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
 
 {
-    "spacename": "space3"
+    "spacename": "space1"
 }
+
+### DELETE SPACE test
+
+DELETE  http://localhost:8080/spaces/62f83583fa7cf7bfff4bed53
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+### DELETE SPACE victor
+
+DELETE  http://localhost:8080/spaces/62f83583fa7cf7bfff4bed53
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
 
 ### JOIN SPACE
 
-PUT http://localhost:8080/spaces/62f82bbdeb02c393c24f575a
+PUT http://localhost:8080/spaces/62f833c677d174940bdcf9e7/join
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
+
+### LEAVE SPACE
+
+PUT http://localhost:8080/spaces/62f833c677d174940bdcf9e7/leave
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
 
 
