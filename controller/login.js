@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
             email: userEntry.email
         }
 
-        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+        const accessToken = jwt.sign(user, process.env.DEV_ACCESS_TOKEN_SECRET)
 
         res.status(200).send({
             status: "success", 

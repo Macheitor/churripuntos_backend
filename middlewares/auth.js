@@ -33,7 +33,7 @@ const authJWT = async (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1] // "Bearer TOKEN"
     if (token === null) return res.sendStatus(401)
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.DEV_ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) return res.sendStatus(403)
         req.username = decoded.username;
         req.email = decoded.email;
