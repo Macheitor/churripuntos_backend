@@ -2,7 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 const {authJWT} = require('../middlewares/auth');
-const {createSpace, getSpaces, joinSpace, leaveSpace, deleteSpace} = require('../controller/spaces');
+
+const { createSpace,
+        getSpaces,
+        joinSpace,
+        leaveSpace, 
+        deleteSpace,
+        addAdminSpace,
+        deleteAdminSpace
+} = require('../controller/spaces');
 
 router.get( '/',
             authJWT,
@@ -19,6 +27,14 @@ router.put( '/:id/join',
 router.put( '/:id/leave',
             authJWT,
             leaveSpace);
+
+router.put( '/:id/addAdmin',
+            authJWT,
+            addAdminSpace);
+
+router.put( '/:id/deleteAdmin',
+            authJWT,
+            deleteAdminSpace);
 
 router.delete( '/:id',
                 authJWT,

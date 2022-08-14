@@ -3,9 +3,13 @@ const Spaces = require('mongoose').model("Spaces")
 
 async function getSpaces (req, res) {
     try {
-        const userId = req.userId;
+        const user = {
+            username: req.username,
+            email: req.email, 
+            userId: req.userId
+        };
 
-        let spaces = await Spaces.find({users: {$elemMatch: {userId}}});
+        let spaces = await Spaces.find({users: {$elemMatch: {userId: user.userId}}});
 
         res.status(200).send({
             status: "success",
@@ -25,30 +29,71 @@ async function createSpace (req, res) {
 
     try {
         const spacename = req.body.spacename; 
+
         if (!spacename)  return res.status(400).send({status: 'fail', message: 'spacename not provided'});
 
-        const username = req.username;
-        const email = req.email;
-        const userId = req.userId;
+        const user = {
+            username: req.username,
+            email: req.email, 
+            userId: req.userId
+        };
 
         const space = {
             spacename,
-            admins: {username, email, userId},
-            users: {username, email, userId}
+            admins: user,
+            users: user
         };
 
         let spaceCreated = await Spaces.create(space);
 
         res.status(200).send({
             status: "success",
-            message: `spacename ${spaceCreated.spacename} with space id ${spaceCreated._id} created`
+            message: `space ${spaceCreated.spacename} created`
         });
 
     } catch (err) {
-        res.status(500).send({
-            status: 'error',
-            message: err.message
-        })
+        res.status(500).send({ status: 'error', message: err.message })
+    }
+}
+
+
+async function deleteSpace (req, res) {
+    try {
+        const spaceId = req.params.id;
+
+        const user = {
+            username: req.username,
+            email: req.email, 
+            userId: req.userId
+        };
+
+        // Check if space exists.
+        let space = await Spaces.findOne({_id: spaceId }, {_id: 0, admins: 1});
+        if (!space) {
+            return res.status(400).send({
+                status: "fail",
+                message: `space not found.`
+            });
+        }
+
+        // Check if user is admin
+        const isAdmin = space.admins.find(e => e.userId === user.userId);
+        if (!isAdmin) {
+            return res.status(400).send({
+                status: "fail",
+                message: `user ${user.username} is not admin.`
+            });
+        }
+
+        // Delete space
+        let spaceDeleted = await Spaces.findOneAndDelete({_id: spaceId});
+        res.status(200).send({
+            status: "success",
+            message: `space ${spaceDeleted.spacename} deleted.`
+        });
+      
+    } catch (err) {
+        res.status(500).send({status: 'error', message: err.message})
     }
 }
 
@@ -57,23 +102,22 @@ async function joinSpace (req, res) {
     try {
 
         const spaceId = req.params.id;
-        
+
         const user = {
             username: req.username,
             email: req.email, 
             userId: req.userId
         };
-        
+
         let alreadyJoined = await Spaces.findOne({_id: spaceId, "users.userId": user.userId})
         
         if (alreadyJoined) {
-            res.status(409).send({
+            return res.status(409).send({
                 status: 'error',
-                message: `user already joined this space`
+                message: `user has already joined this space`
             });
-            return;
         }
-    
+
         // Join only if not already there
         let spaceJoined = await Spaces.findOneAndUpdate(
             {_id: spaceId}, 
@@ -99,15 +143,40 @@ async function leaveSpace (req, res) {
     try {
         const spaceId = req.params.id;
         
+        const userToDelete = {
+            username: req.body.username,
+            userId: req.body.userId
+        };
+
         const user = {
             username: req.username,
             email: req.email, 
             userId: req.userId
         };
 
+        if (!userToDelete.userId) return res.status(400).send({status: 'fail', message: 'userId not provided'});
+
+        let admins = await Spaces.find({_id: spaceId}, {_id: 0, admins: 1});
+        console.log("************")
+        console.log(admins)
+        console.log(admins[0])
+        console.log(admins[0].admins[0].userId)
+        console.log(typeof(admins))
+        console.log(admins.lenght)
+        if (admins && 
+            admins.lenght === 1 && 
+            admins[0].admins[0].userId === userToDelete.userId) {
+
+            return res.status(400).send({
+                status: "fail",
+                message: `You are the last admin. Asign another admin or delete the space.`
+            });
+        }
+
         let userLeft = await Spaces.findOneAndUpdate(
             {_id: spaceId, "users.userId": user.userId},
-            {$pull: {users: {userId: user.userId}}});
+            {$pull: {admins: {userId: user.userId}},
+             $pull: {users: {userId: user.userId}}});
 
         if (userLeft) {
             res.status(200).send({
@@ -127,9 +196,14 @@ async function leaveSpace (req, res) {
 }
 
 
-async function deleteSpace (req, res) {
+async function addAdminSpace (req, res) {
     try {
         const spaceId = req.params.id;
+
+        const userToAdmin = {
+            username: req.body.username,
+            userId: req.body.userId
+        };
 
         const user = {
             username: req.username,
@@ -137,25 +211,123 @@ async function deleteSpace (req, res) {
             userId: req.userId
         };
 
-        let spaceDeleted = await Spaces.findOneAndDelete(
-            {_id: spaceId, "admins.userId": user.userId}, 
-        );
+        // Check given JSON parameters
+        if (!userToAdmin.userId) return res.status(400).send({status: 'fail', message: 'userId not provided'});
 
-        if (spaceDeleted) {   
-            res.status(200).send({
-                status: "success",
-                message: `${spaceDeleted.spacename} with space id ${spaceDeleted._id} deleted.`
-            });
-        } else {
-            res.status(400).send({
+        // Check if space exists.
+        let space = await Spaces.findOne({_id: spaceId }, {_id: 0, spacename: 1, admins: 1, users: 1});
+        if (!space) {
+            return res.status(400).send({
                 status: "fail",
-                message: ` user ${user.username} is not admin of space id ${spaceId}.`
+                message: `space not found.`
             });
         }
+
+        // Check if user is admin
+        const isAdmin = space.admins.find(e => e.userId === user.userId);
+        if (!isAdmin) {
+            return res.status(400).send({
+                status: "fail",
+                message: `user ${user.username} is not admin.`
+            });
+        }
+
+        // Check if user to make admin is user of the space
+        const isUser = space.users.find(e => e.userId === userToAdmin.userId);
+        if (!isUser) {
+            return res.status(400).send({
+                status: "fail",
+                message: `user ${userToAdmin.username} has not joined this space.`
+            });
+        }
+
+        // Check if user to make admin is already admin
+        const isAlreadyAdmin = space.admins.find(e => e.userId === userToAdmin.userId);
+        if (isAlreadyAdmin) {
+            return res.status(400).send({
+                status: "fail",
+                message: `user ${userToAdmin.username} is already admin.`
+            });
+        }
+
+        await Spaces.findOneAndUpdate({_id: spaceId}, {$push: {admins: userToAdmin}});
+
+        res.status(200).send({
+            status: "success",
+            message: `user ${userToAdmin.username} added as admin in space ${space.spacename}.`
+        });
+
     } catch (err) {
         res.status(500).send({status: 'error', message: err.message})
     }
 }
 
 
-module.exports = {createSpace, getSpaces, joinSpace, leaveSpace, deleteSpace};
+async function deleteAdminSpace (req, res) {
+    try {
+        const spaceId = req.params.id;
+
+        const userToDowngrade = {
+            username: req.body.username,
+            userId: req.body.userId
+        };
+
+        const user = {
+            username: req.username,
+            email: req.email, 
+            userId: req.userId
+        };
+
+        // Check given parameters
+        if (!userToDowngrade.userId) return res.status(400).send({status: 'fail', message: 'userId not provided'});
+        if (!spaceId) return res.status(400).send({status: 'fail', message: 'spaceId not provided'});
+
+        // Check if space exists.
+        let space = await Spaces.findOne({_id: spaceId }, {_id: 0, spacename: 1, admins: 1});
+        if (!space) {
+            return res.status(400).send({
+                status: "fail",
+                message: `space not found.`
+            });
+        }
+
+        // Check if user is admin
+        const userIsAdmin = space.admins.find(e => e.userId === user.userId);
+        if (!userIsAdmin) {
+            return res.status(400).send({
+                status: "fail",
+                message: `user ${user.username} is not admin.`
+            });
+        }
+
+        // Check if user to downgrade is admin
+        const userToDownIsAdmin = space.admins.find(e => e.userId === userToDowngrade.userId);
+        if (!userToDownIsAdmin) {
+            return res.status(400).send({
+                status: "fail",
+                message: `user ${userToDowngrade.username} is not admin.`
+            });
+        }
+
+        // Check if is the last admin
+        if (space.admins.length === 1) {
+            return res.status(400).send({
+                status: "fail",
+                message: `user ${userToDowngrade.username} is last admin. Asing another admin.`
+            });
+        }
+
+        await Spaces.findOneAndUpdate( {_id: spaceId}, {$pull: {admins: {userId: userToDowngrade.userId}}});
+
+        res.status(200).send({
+            status: "success",
+            message: `user ${userToDowngrade.username} removed from admin.`
+        });
+
+    } catch (err) {
+        res.status(500).send({status: 'error', message: err.message})
+    }
+}
+
+
+module.exports = {createSpace, getSpaces, joinSpace, leaveSpace, deleteSpace, addAdminSpace, deleteAdminSpace};
