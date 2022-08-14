@@ -1,92 +1,55 @@
-### GET SPACES
+### GET SPACES from test
 
 GET http://localhost:8080/spaces
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
 
-### CREATE SPACE
+### GET SPACES from victor
+
+GET http://localhost:8080/spaces
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
+
+###############################################################################
+###############################################################################
+
+### CREATE SPACE by test
 
 POST http://localhost:8080/spaces
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
 
 {
-    "spacename": "space1"
+    "spacename": "space by test"
 }
 
-### DELETE SPACE test
+### CREATE SPACE by victor
 
-DELETE  http://localhost:8080/spaces/62f95128e278d3a657228b47
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
-
-### DELETE SPACE victor
-
-DELETE  http://localhost:8080/spaces/62f95128e278d3a657228b47
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
-
-### JOIN SPACE victor
-
-PUT http://localhost:8080/spaces/62f95128e278d3a657228b47/join
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
-
-### LEAVE SPACE victor
-
-PUT http://localhost:8080/spaces/62f95128e278d3a657228b47/leave
+POST http://localhost:8080/spaces
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
 
 {
-    "userId": "62f647af9dd019241832ff69"
-}
-### JOIN SPACE test
-
-PUT http://localhost:8080/spaces/62f95128e278d3a657228b47/join
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
-
-### LEAVE SPACE test
-
-PUT http://localhost:8080/spaces/62f95128e278d3a657228b47/leave
-content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
-
-{
-    "userId": "62f647af9dd019241832ff69"
-}
-### ADD ADMIN SPACE test
-
-PUT  http://localhost:8080/spaces/62f95128e278d3a657228b47/addAdmin
-content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
-
-{
-    "username": "victor",
-    "userId": "62f81d733c4d5f3e4066b73c"
+    "spacename": "space by victor"
 }
 
-### ADD ADMIN SPACE victor
+###############################################################################
+###############################################################################
 
-PUT  http://localhost:8080/spaces/62f95128e278d3a657228b47/addAdmin
-content-type: application/json
+### DELETE SPACE by test
+
+DELETE  http://localhost:8080/spaces/62f96cd76ddc5dc406108740
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+### DELETE SPACE by victor
+
+DELETE  http://localhost:8080/spaces/62f96cd76ddc5dc406108740
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
 
-{
-    "username": "victor",
-    "userId": "62f81d733c4d5f3e4066b73c"
-}
+###############################################################################
+###############################################################################
 
-### DELETE ADMIN SPACE test
+### JOIN SPACE admin:test joining: test
 
-PUT  http://localhost:8080/spaces/62f95128e278d3a657228b47/deleteAdmin
-content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
-
-{
-    "username": "victor",
-    "userId": "62f81d733c4d5f3e4066b73c"
-}
-
-### DELETE ADMIN SPACE test
-
-PUT  http://localhost:8080/spaces/62f95128e278d3a657228b47/deleteAdmin
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/join
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
 
@@ -95,9 +58,150 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2N
     "userId": "62f647af9dd019241832ff69"
 }
 
+### JOIN SPACE admin:test joining: victor
+
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/join
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
+### JOIN SPACE admin: victor joining: victor
+
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/join
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
+### JOIN SPACE admin: victor joining: test
+
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/join
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
+
+{
+    "username": "test",
+    "userId": "62f647af9dd019241832ff69"
+}
+
+###############################################################################
+###############################################################################
+
+### LEAVE SPACE admin:test leaving: test
+
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/leave
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "username": "test",
+    "userId": "62f647af9dd019241832ff69"
+}
+
+### LEAVE SPACE admin:test leaving: victor
+
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/leave
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
+### LEAVE SPACE admin:victor leaving test
+
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/leave
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
+
+{
+    "username": "test",
+    "userId": "62f647af9dd019241832ff69"
+}
+
+### LEAVE SPACE admin:victor leaving: victor
+
+PUT http://localhost:8080/spaces/62f96cd76ddc5dc406108740/leave
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
+###############################################################################
+###############################################################################
+
+### ADD ADMIN SPACE admin:test adding:victor
+
+PUT  http://localhost:8080/spaces/62f96cd76ddc5dc406108740/addAdmin
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
+### ADD ADMIN SPACE admin:victor adding:victor
+
+PUT  http://localhost:8080/spaces/62f96cd76ddc5dc406108740/addAdmin
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
+###############################################################################
+###############################################################################
+
+### DELETE ADMIN SPACE test
+
+PUT  http://localhost:8080/spaces/62f96cd76ddc5dc406108740/deleteAdmin
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
+### DELETE ADMIN SPACE admin:test deleting:test
+
+PUT  http://localhost:8080/spaces/62f96cd76ddc5dc406108740/deleteAdmin
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "username": "test",
+    "userId": "62f647af9dd019241832ff69"
+}
+
+### DELETE ADMIN SPACE admin:test deleting:victor
+
+PUT  http://localhost:8080/spaces/62f96cd76ddc5dc406108740/deleteAdmin
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "username": "victor",
+    "userId": "62f81d733c4d5f3e4066b73c"
+}
+
 ### DELETE ADMIN SPACE victor
 
-PUT  http://localhost:8080/spaces/62f95128e278d3a657228b47/deleteAdmin
+PUT  http://localhost:8080/spaces/62f96cd76ddc5dc406108740/deleteAdmin
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY4MWQ3MzNjNGQ1ZjNlNDA2NmI3M2MiLCJ1c2VybmFtZSI6InZpY3RvciIsImVtYWlsIjoidmljdG9yQGdtYWlsLmNvbSIsImlhdCI6MTY2MDQyNzY1OX0.MW4D8bd9lDX1yDMtXYiABKJEW3xtUzBrBX4hPxrCMqY
 
