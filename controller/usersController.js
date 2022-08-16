@@ -1,10 +1,10 @@
 const Users = require('mongoose').model("Users");
-const {logEvent} = require('../logs/logEvents');
+const {errLogger} = require('../middlewares/logger');
 
 async function getUsers (req, res) {
 
     try {
-        const search = req.params.id;
+        const search = req.body.search;
 
         let users = await Users.find({username: new RegExp('^' + search)}, {_id: 0, username: 1});
 
@@ -18,7 +18,7 @@ async function getUsers (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
 

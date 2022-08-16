@@ -3,42 +3,37 @@ const router = express.Router();
 
 const {authJWT} = require('../middlewares/auth');
 
-const { createSpace,
-        getSpaces,
-        joinSpace,
-        leaveSpace, 
-        deleteSpace,
-        addAdminSpace,
-        deleteAdminSpace
-} = require('../controller/spaces');
+const spacesController = require('../controller/spacesController');
 
 router.get( '/',
             authJWT,
-            getSpaces);
+            spacesController.getSpaces);
 
-router.post( '/',
-             authJWT,
-             createSpace);
+router.post( 
+    '/',
+    authJWT,
+    spacesController.createSpace
+);
 
 router.put( '/:id/join',
             authJWT,
-            joinSpace);
+            spacesController.joinSpace);
 
 router.put( '/:id/leave',
             authJWT,
-            leaveSpace);
+            spacesController.leaveSpace);
 
 router.put( '/:id/addAdmin',
             authJWT,
-            addAdminSpace);
+            spacesController.addAdminSpace);
 
 router.put( '/:id/deleteAdmin',
             authJWT,
-            deleteAdminSpace);
+            spacesController.deleteAdminSpace);
 
 router.delete( '/:id',
                 authJWT,
-                deleteSpace);
+                spacesController.deleteSpace);
 
 
 module.exports = router;

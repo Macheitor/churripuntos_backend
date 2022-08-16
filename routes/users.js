@@ -3,11 +3,10 @@ const router = express.Router();
 
 const {authJWT} = require('../middlewares/auth');
 
-const { getUsers
-} = require('../controller/users');
+const usersController = require('../controller/usersController');
 
-router.get( '/:id',
+router.get( '/',
             authJWT,
-            getUsers);
+            usersController.getUsers);
 
 module.exports = router;

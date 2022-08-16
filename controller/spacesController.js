@@ -1,5 +1,5 @@
 const Spaces = require('mongoose').model("Spaces")
-const {logEvent} = require('../logs/logEvents');
+const {errLogger} = require('../middlewares/logger');
 
 
 async function getSpaces (req, res) {
@@ -20,7 +20,7 @@ async function getSpaces (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
 
@@ -54,7 +54,7 @@ async function createSpace (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
 
@@ -97,7 +97,7 @@ async function deleteSpace (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
 
@@ -162,7 +162,7 @@ async function joinSpace (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
     
@@ -238,7 +238,7 @@ async function leaveSpace (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
 
@@ -307,7 +307,7 @@ async function addAdminSpace (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
 
@@ -375,9 +375,16 @@ async function deleteAdminSpace (req, res) {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 }
 
 
-module.exports = {createSpace, getSpaces, joinSpace, leaveSpace, deleteSpace, addAdminSpace, deleteAdminSpace};
+module.exports = {  
+    createSpace,
+    getSpaces,
+    joinSpace,
+    leaveSpace,
+    deleteSpace,
+    addAdminSpace,
+    deleteAdminSpace};

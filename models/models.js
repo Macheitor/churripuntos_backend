@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const mongoose = require('mongoose');
 
-module.exports = async () => {
+const initDb = async () => {
 
     let mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}`;
 
@@ -100,3 +100,4 @@ module.exports = async () => {
     
 }
 
+module.exports = initDb;

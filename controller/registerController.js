@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const Users = require('mongoose').model('Users');
-const {logEvent} = require('../logs/logEvents');
+const {errLogger} = require('../middlewares/logger');
 
 module.exports = async (req, res) => {
     try {
@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
     } catch(err) {
         const error = { status: 'error', message: err.message }; 
         res.status(500).send(error);
-        logEvent(error.message);
+        errLogger(error.message);
     }
 
 }

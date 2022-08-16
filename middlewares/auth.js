@@ -44,4 +44,7 @@ const authJWT = async (req, res, next) => {
     })
 }
 
-module.exports = {authentication, authJWT};
+module.exports = {
+    authentication,
+    authJWT
+};

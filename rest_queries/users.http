@@ -1,4 +1,9 @@
 ### GET USERS from test
 
-GET http://localhost:8080/users/t
+GET http://localhost:8080/users/
+content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+
+{
+    "search": ""
+}
