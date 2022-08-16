@@ -16,15 +16,6 @@ app.use('/spaces', require('./routes/spaces'));
 app.use('/users', require('./routes/users'));
 app.use((req, res) => res.status(404).send({ status: "fail", message: "PAGE NOT FOUND"}));
 
-
-process.on('uncaughtException', err => {
-    console.error(`There was an uncaught error: ${err}`);
-    res.status(500).send({
-        status: 'error',
-        message: err.message
-    })
-})
-
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
 

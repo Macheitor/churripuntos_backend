@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
+const {logEvent} = require('../logs/logEvents');
 
 const Users = require('mongoose').model("Users")
 const jwt = require('jsonwebtoken')
@@ -27,10 +28,9 @@ module.exports = async (req, res) => {
             accessToken
         });
 
-     } catch (err) {
-        res.status(500).send({
-            status: 'error',
-            message: err.message
-        })
+     } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }

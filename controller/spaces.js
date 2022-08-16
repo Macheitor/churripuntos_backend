@@ -1,4 +1,5 @@
 const Spaces = require('mongoose').model("Spaces")
+const {logEvent} = require('../logs/logEvents');
 
 
 async function getSpaces (req, res) {
@@ -16,11 +17,10 @@ async function getSpaces (req, res) {
             spaces
         });
 
-    } catch (err) {
-        res.status(500).send({
-            status: 'error',
-            message: err.message
-        })
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
 
@@ -51,8 +51,10 @@ async function createSpace (req, res) {
             message: `space ${spaceCreated.spacename} created`
         });
 
-    } catch (err) {
-        res.status(500).send({ status: 'error', message: err.message })
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
 
@@ -92,8 +94,10 @@ async function deleteSpace (req, res) {
             message: `space ${spaceDeleted.spacename} deleted.`
         });
       
-    } catch (err) {
-        res.status(500).send({status: 'error', message: err.message})
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
 
@@ -155,8 +159,10 @@ async function joinSpace (req, res) {
             message: `user ${userJoining.username} joined space ${spaceId}`
         });
 
-    } catch (err) {
-        res.status(500).send({status: 'error', message: err.message})
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
     
@@ -229,8 +235,10 @@ async function leaveSpace (req, res) {
             message: `user ${userLeaving.username} left space ${spaceId}`
         });
 
-    } catch (err) {
-        res.status(500).send({status: 'error', message: err.message})
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
 
@@ -296,8 +304,10 @@ async function addAdminSpace (req, res) {
             message: `user ${userToAdmin.username} added as admin in space ${space.spacename}.`
         });
 
-    } catch (err) {
-        res.status(500).send({status: 'error', message: err.message})
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
 
@@ -362,8 +372,10 @@ async function deleteAdminSpace (req, res) {
             message: `user ${userToDowngrade.username} removed from admin.`
         });
 
-    } catch (err) {
-        res.status(500).send({status: 'error', message: err.message})
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
 

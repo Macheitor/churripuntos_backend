@@ -1,5 +1,5 @@
-const Users = require('mongoose').model("Users")
-
+const Users = require('mongoose').model("Users");
+const {logEvent} = require('../logs/logEvents');
 
 async function getUsers (req, res) {
 
@@ -15,8 +15,10 @@ async function getUsers (req, res) {
             users
         });
 
-    } catch (err) {
-        res.status(500).send({ status: 'error', message: err.message })
+    } catch(err) {
+        const error = { status: 'error', message: err.message }; 
+        res.status(500).send(error);
+        logEvent(error.message);
     }
 }
 
