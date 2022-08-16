@@ -1,4 +1,6 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 const mongoose = require('mongoose');
 
@@ -9,18 +11,88 @@ module.exports = async () => {
     mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 
     const usersSchema = new mongoose.Schema({
-        username: String,
-        email: String,
-        password: String,
-        validated: Boolean
+        username: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        password:{
+            type: String,
+            required: true
+        },
+        validated:{
+            type: Boolean,
+            default: false
+        },
+        refreshToken: [String]
+
     }, {timestamps: true});
 
     const spacesSchema = new mongoose.Schema({
-        spacename: String,
-        admins:[{username: String, userId: String}], 
-        users: [{username: String, userId: String, color: String}],
-        tasks: [{taskname: String, points: Number}],
-        activities: [{username: String, userId: String, color: String, taskname: String, points: Number, date: Date, validated: Boolean}],
+        spacename: {
+            type: String,
+            required: true
+        },
+        admins:[{
+            username: {
+                type: String,
+                required: true
+            },
+            userId: {
+                type: String,
+                required: true
+            }}], 
+        users: [{
+            username: {
+                type: String,
+                required: true
+            },
+            userId: {
+                type: String,
+                required: true
+            },
+            color: String
+        }],
+        tasks: [{
+            taskname: {
+                type: String,
+                required: true
+            },
+            points: {
+                type: Number,
+                required: true
+            }
+        }],
+        activities: [{
+            username: {
+                type: String,
+                required: true
+            },
+            userId: {
+                type: String,
+                required: true
+            },
+            color: {
+                type: String,
+                required: true
+            },
+            taskname: {
+                type: String,
+                required: true
+            },
+            points: {
+                type: Number,
+                required: true
+            },
+            date: {
+                type: Date,
+                required: true
+            },
+            validated: Boolean
+        }],
     }, {timestamps: true});
 
     mongoose.model('Users', usersSchema);

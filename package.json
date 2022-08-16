@@ -14,8 +14,8 @@
     "nodemon": "^2.0.19"
   },
   "scripts": {
-    "test": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server",
+    "dev": "nodemon server"
   },
   "repository": {
     "type": "git",
