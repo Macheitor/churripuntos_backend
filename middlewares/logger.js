@@ -20,7 +20,6 @@ const logEvent = async (message, filename) => {
 
 const errLogger = (message) => {
     logEvent(`${message}`, 'errLog.txt');
-    next();
 }
 
 const reqLogger = (req, res, next) => {

@@ -22,14 +22,14 @@ app.use(express.urlencoded({extended:false}));
 // Create Database if not exists
 require('./models/models.js')();
 
-//routes
+// routes
 app.get('/', (req, res) =>res.send('Home page'));
-
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'));
 app.use('/spaces', require('./routes/spaces'));
 app.use('/users', require('./routes/users'));
 
+// routes fallback
 app.all('*', (req, res) =>res.status(404).send({ status: 'fail', code:'404', message: 'PAGE NOT FOUND'}));
 app.use(errorHandler);
 
