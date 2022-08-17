@@ -2,11 +2,9 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-const mongoose = require('mongoose');
-
 const initDb = async () => {
-
-    let mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}`;
+    const mongoose = require('mongoose');
+    const mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}`;
 
     mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 

@@ -5,7 +5,7 @@ const {errLogger} = require('../middlewares/logger');
         res.status(201).send({status: "success"});
 
      } catch(err) {
-        const error = { status: 'error', message: err.message }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
         res.status(500).send(error);
         errLogger(error.message);
     }

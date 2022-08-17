@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
         });
 
      } catch(err) {
-        const error = { status: 'error', message: err.message }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
         res.status(500).send(error);
         errLogger(error.message);
     }
