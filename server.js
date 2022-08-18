@@ -19,12 +19,12 @@ app.use(express.json());
 // Build-in middleware urlencoded form data
 app.use(express.urlencoded({extended:false}));
 
-// routes - no JWT needed
+// routes - JWT NO needed
 app.get('/', (req, res) =>res.send('Home page'));
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'));
 
-// routes with JWT
+// routes - JWT YES needed
 app.use(authJWT);
 app.use('/spaces', require('./routes/spaces'));
 app.use('/users', require('./routes/users'));

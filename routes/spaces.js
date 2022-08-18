@@ -3,10 +3,8 @@ const router = express.Router();
 
 const spacesController = require('../controller/spacesController');
 
-// Spaces CRUD
-router.route('/')
-    .get(spacesController.getSpaces)
-    .post(spacesController.createSpace)
+// Space CRUD
+router.route( '/:spaceId')
     .delete(spacesController.deleteSpace);
 
 // Users CRUD
@@ -16,8 +14,8 @@ router.route( '/:spaceId/users')
 
 // Admins CRUD
 router.route('/:spaceId/admins')
-    .post(spacesController.addAdmin)
-    .delete(spacesController.removeAdmin);
+    .post(spacesController.createAdmin)
+    .delete(spacesController.deleteAdmin);
 
 // Tasks CRUD
 router.route('/:spaceId/tasks')
@@ -25,5 +23,11 @@ router.route('/:spaceId/tasks')
     .post(spacesController.createTask)
     .put(spacesController.updateTask)
     .delete(spacesController.deleteTask);
+
+// Activities CRUD
+router.route('/:spaceId/activities')
+    .get(spacesController.getActivities)
+    .post(spacesController.createActivity)
+    .delete(spacesController.deleteActivity);
 
 module.exports = router;

@@ -1,0 +1,35 @@
+### GET SPACES from test
+
+GET http://localhost:8080/spaces
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3YzYyNjkwMWM4MDAxMDA4YzUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA3ODI0NzF9.S_wP0EXZW-AQcGGAdBuOipsb414KycL9-i7Jv4jTGyM
+
+### GET SPACES from victor
+
+GET http://localhost:8080/spaces
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
+
+###############################################################################
+
+### GET ACTIVITIES by test
+
+GET http://localhost:8080/spaces/62fd877c626901c8001008c5/activities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3YzYyNjkwMWM4MDAxMDA4YzUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA3ODI0NzF9.S_wP0EXZW-AQcGGAdBuOipsb414KycL9-i7Jv4jTGyM
+
+### GET ACTIVITIES by victor
+
+GET http://localhost:8080/spaces/62fd877c626901c8001008c5/activities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
+
+###############################################################################
+
+### CREATE ACTIVITY by test
+
+POST http://localhost:8080/spaces/62fd877c626901c8001008c5/activities
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3YzYyNjkwMWM4MDAxMDA4YzUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA3ODI0NzF9.S_wP0EXZW-AQcGGAdBuOipsb414KycL9-i7Jv4jTGyM
+
+{
+    "taskname": "conga2",
+    "points": 2,
+    "taskId": "62fd9012022121f447dcb1fe"
+}

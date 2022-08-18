@@ -34,17 +34,19 @@ const initDb = async () => {
             type: String,
             required: true
         },
-        admins:[{
-            username: {
-                type: String,
-                required: true
-            }}], 
         users: [{
+            isAdmin:{
+                type: Boolean,
+                default: false
+            },
             username: {
                 type: String,
                 required: true
             },
-            color: String
+            color: {
+                type: String,
+                required: true
+            }
         }],
         tasks: [{
             taskname: {
@@ -61,7 +63,15 @@ const initDb = async () => {
                 type: String,
                 required: true
             },
+            userId: {
+                type: String,
+                required: true
+            },
             color: {
+                type: String,
+                required: true
+            },
+            taskId: {
                 type: String,
                 required: true
             },
@@ -77,7 +87,10 @@ const initDb = async () => {
                 type: Date,
                 required: true
             },
-            validated: Boolean
+            validated:{
+                type: Boolean,
+                default: false
+            }
         }],
     }, {timestamps: true});
 

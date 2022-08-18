@@ -3,64 +3,9 @@ const Users = require('mongoose').model("Users")
 const {errLogger} = require('../middlewares/logger');
 
 
-async function getSpaces (req, res) {
-    try {
-        const user = {
-            username: req.username,
-            _id: req._id
-        };
-
-        const spaces = await Spaces.find({users: {$elemMatch: {_id: user._id}}});
-
-        res.status(200).send({
-            status: "success",
-            spaces
-        });
-
-    } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
-        res.status(500).send(error);
-        errLogger(error.message);
-    }
-}
-
-
-async function createSpace (req, res) {
-
-    try {
-        const spacename = req.body.spacename; 
-
-        if (!spacename)  return res.status(400).send({status: 'fail', message: 'spacename not provided'});
-
-        const user = {
-            username: req.username,
-            _id: req._id
-        };
-
-        const space = {
-            spacename,
-            admins: user,
-            users: user
-        };
-
-        const spaceCreated = await Spaces.create(space);
-
-        res.status(200).send({
-            status: "success",
-            message: `space ${spaceCreated.spacename} created`
-        });
-
-    } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
-        res.status(500).send(error);
-        errLogger(error.message);
-    }
-}
-
-
 async function deleteSpace (req, res) {
     try {
-        const spaceId = req.body.spaceId;
+        const spaceId = req.params.spaceId;
 
         const user = {
             username: req.username,
@@ -68,7 +13,7 @@ async function deleteSpace (req, res) {
         };
 
         // Check if space exists.
-        const space = await Spaces.findById({_id: spaceId }, {_id: 0, admins: 1});
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -76,20 +21,32 @@ async function deleteSpace (req, res) {
             });
         }
 
-        // Check if user is admin
-        const isAdmin = space.admins.find(e => e._id.toString().toString() === user._id);
-        if (!isAdmin) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not admin.`
+                message: `user ${user.username} is not in this space.`
+            });
+        }
+
+        // Check if user is admin
+        if (!userExists.isAdmin) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not admin of this space.`
             });
         }
 
         // Delete space
-        const spaceDeleted = await Spaces.findByIdAndDelete({_id: spaceId});
+        const spaceDeleted = await Spaces.findOneAndDelete({_id: spaceId});
         res.status(200).send({
             status: "success",
-            message: `space ${spaceDeleted.spacename} deleted.`
+            message: "space deleted.",
+            space: {
+                spacename: spaceDeleted.spacename,
+                spaceId
+            }
         });
       
     } catch(err) {
@@ -102,34 +59,25 @@ async function deleteSpace (req, res) {
 
 async function joinSpace (req, res) {
     try {
-
         const spaceId = req.params.spaceId;
-
-        const userJoining = {
-            username: req.body.username,
-            _id: req.body._id
-        };
 
         const user = {
             username: req.username,
             _id: req._id
         };
 
-        if (!userJoining._id) {
-            return res.status(400).send({status: 'fail', message: 'user _id not provided'});
-        }
+        const userJoining = {
+            username: req.body.username,
+            _id: req.body._id,
+            color: req.body.color
+        };
 
-        // Check if userJoining exists
-        const userExists = await Users.findOne({_id: userJoining._id });
-        if (!userExists) {
-            return res.status(400).send({
-                status: `fail`,
-                message: `user joining does not exist.`
-            });
-        }
+        if (!userJoining._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
+        if (!userJoining.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
+        if (!userJoining.color) return res.status(400).send({status: 'fail', message: 'color not provided'});
 
         // Check if space exists.
-        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, spacename: 1, admins: 1, users: 1});
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -137,12 +85,20 @@ async function joinSpace (req, res) {
             });
         }
 
-        // Check if user is admin
-        const isAdmin = space.admins.find(e => e._id.toString().toString() === user._id);
-        if (!isAdmin) {
+        // Check if user is in this space
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not admin.`
+                message: `user ${user.username} is not in this space.`
+            });
+        }
+
+        // Check if user is admin
+        if (!userExists.isAdmin) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not admin of this space.`
             });
         }
 
@@ -150,8 +106,17 @@ async function joinSpace (req, res) {
         const alreadyJoined = await Spaces.findOne({_id: spaceId, "users._id": userJoining._id})
         if (alreadyJoined) {
             return res.status(400).send({
-                status: 'error',
+                status: 'fail',
                 message: `user ${userJoining.username} has already joined this space`
+            });
+        }
+
+        // Check if userJoining exists in our users database
+        const joiningUserExists = await Users.findOne({_id: userJoining._id });
+        if (!joiningUserExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user joining does not exist.`
             });
         }
 
@@ -159,10 +124,9 @@ async function joinSpace (req, res) {
             {_id: spaceId}, 
             {$push: {users: userJoining}});
         
-
         res.status(200).send({
             status: "success",
-            message: `user ${userJoining.username} joined space ${spaceId}`
+            message: `user ${userJoining.username} joined this space.`
         });
 
     } catch(err) {
@@ -175,22 +139,23 @@ async function joinSpace (req, res) {
 async function leaveSpace (req, res) {
     try {
         const spaceId = req.params.spaceId;
-        
-        const userLeaving = {
-            username: req.body.username,
-            _id: req.body._id
-        };
 
         const user = {
             username: req.username,
             _id: req._id
         };
 
+        const userLeaving = {
+            username: req.body.username,
+            _id: req.body._id
+        };
+
+        // Check given JSON parameters
+        if (!userLeaving.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
         if (!userLeaving._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
 
-        const space = await Spaces.findOne({_id: spaceId}, {_id: 0, admins: 1, users: 1, spacename: 1});
-
         // Check if space exists.
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -198,50 +163,53 @@ async function leaveSpace (req, res) {
             });
         }
 
-        // Check if userLeaving is user of the space
-        const isUser = space.users.find(e => e._id.toString() === userLeaving._id);
-        if (!isUser) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not in this space.`
+            });
+        }
+
+        // Check if userLeaving exist
+        const userLeavingExists = space.users.find(u => u._id.toString() === userLeaving._id);
+        if (!userLeavingExists) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${userLeaving.username} is not in this space.`
             });
         }
 
-        // Check for permissions: check if user is admin or is self user.
-        const userIsAdmin = space.admins.find(e => e._id.toString() === user._id);
-        if ((!userIsAdmin) && (user._id !== userLeaving._id)) {
-            return res.status(400).send({
-                status: `fail`,
-                message: `user ${user.username} is not admin.`
-            });
-            
-        }
-
         // Check if is the last admin
-        if ((space.admins.length === 1) && (space.admins[0]._id.toString() === userLeaving._id)) {
+        const admins = space.users.filter(u => u.isAdmin);
+        if ((admins.length === 1) && (admins[0]._id.toString() === userLeaving._id)) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${userIsAdmin.username} is last admin. Asing another admin.`
             });
         }
 
-        // Remove from users
-        await Spaces.findByIdAndUpdate(
+        // Check if user is admin  if user === UserLeaving
+        if ((user._id !== userLeaving._id) && (!userExists.isAdmin)) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not admin of this space.`
+            });
+        }
+
+        // Delete user
+        await Spaces.findOneAndUpdate(
             {_id: spaceId},
             {$pull: {users: {_id: userLeaving._id}}});
 
-        // Remove from admins
-        await Spaces.findByIdAndUpdate(
-            {_id: spaceId},
-            {$pull: {admins: {_id: userLeaving._id}}});
 
         res.status(200).send({
             status: "success",
-            message: `user ${userLeaving.username} left space ${spaceId}`
+            message: `user ${userLeaving.username} left this space`
         });
 
     } catch(err) {
-        console.log("hey")
         const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
         res.status(500).send(error);
         errLogger(error.message);
@@ -249,25 +217,26 @@ async function leaveSpace (req, res) {
 }
 
 
-async function addAdmin (req, res) {
+async function createAdmin (req, res) {
     try {
         const spaceId = req.params.spaceId;
+
+        const user = {
+            username: req.username,
+            _id: req._id
+        };
 
         const userToAdmin = {
             username: req.body.username,
             _id: req.body._id
         };
 
-        const user = {
-            username: req.username,
-            _id: req._id
-        };
-
         // Check given JSON parameters
         if (!userToAdmin._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
+        if (!userToAdmin.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
 
         // Check if space exists.
-        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, spacename: 1, admins: 1, users: 1});
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -275,38 +244,48 @@ async function addAdmin (req, res) {
             });
         }
 
-        // Check if user is admin
-        const isAdmin = space.admins.find(e => e._id.toString() === user._id);
-        if (!isAdmin) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not admin.`
+                message: `user ${user.username} is not in this space.`
             });
         }
 
-        // Check if user to make admin is user of the space
-        const isUser = space.users.find(e => e._id.toString() === userToAdmin._id);
-        if (!isUser) {
+        // Check if user is admin
+        if (!userExists.isAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToAdmin.username} has not joined this space.`
+                message: `user ${user.username} is not admin of this space.`
+            });
+        }
+
+        // Check if user to make admin exist
+        const userToAdminExists = space.users.find(u => u._id.toString() === userToAdmin._id);
+        if (!userToAdminExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${userToAdmin.username} is not in this space.`
             });
         }
 
         // Check if user to make admin is already admin
-        const isAlreadyAdmin = space.admins.find(e => e._id.toString() === userToAdmin._id);
-        if (isAlreadyAdmin) {
+        if (userToAdminExists.isAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToAdmin.username} is already admin.`
+                message: `user ${userToAdmin.username} is already admin in this space.`
             });
         }
 
-        await Spaces.findByIdAndUpdate({_id: spaceId}, {$push: {admins: userToAdmin}});
+        await Spaces.findOneAndUpdate(
+            {_id: spaceId, "users": { "$elemMatch": { "_id": userToAdmin._id }}},
+            { $set: {"users.$.isAdmin": true, "users.$._id": userToAdmin._id}});
+
 
         res.status(200).send({
             status: "success",
-            message: `user ${userToAdmin.username} added as admin in space ${space.spacename}.`
+            message: `user ${userToAdmin.username} added as admin in this space.`
         });
 
     } catch(err) {
@@ -317,25 +296,26 @@ async function addAdmin (req, res) {
 }
 
 
-async function removeAdmin (req, res) {
+async function deleteAdmin (req, res) {
     try {
         const spaceId = req.params.spaceId;
-
-        const userToDowngrade = {
-            username: req.body.username,
-            _id: req.body._id
-        };
 
         const user = {
             username: req.username,
             _id: req._id
         };
 
+        const userToDowngrade = {
+            username: req.body.username,
+            _id: req.body._id
+        };
+
         // Check given parameters
+        if (!userToDowngrade.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
         if (!userToDowngrade._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
 
         // Check if space exists.
-        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, spacename: 1, admins: 1});
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -343,33 +323,45 @@ async function removeAdmin (req, res) {
             });
         }
 
-        // Check if user is admin
-        const userIsAdmin = space.admins.find(e => e._id.toString() === user._id);
-        if (!userIsAdmin) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not admin.`
+                message: `user ${user.username} is not in this space.`
             });
         }
 
-        // Check if user to downgrade is admin
-        const userToDownIsAdmin = space.admins.find(e => e._id.toString() === userToDowngrade._id);
+        // Check if user is admin
+        if (!userExists.isAdmin) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not admin of this space.`
+            });
+        }
+
+
+        // Check if user to make admin exist
+        const userToDownIsAdmin = space.users.find(u => u._id.toString() === userTouserToDownIsAdminAdmin._id);
         if (!userToDownIsAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToDowngrade.username} is not admin.`
+                message: `user ${userToAdmin.username} is not in this space.`
             });
         }
 
         // Check if is the last admin
-        if (space.admins.length === 1) {
+        const admins = space.users.filter(u => u.isAdmin);
+        if ((admins.length === 1) && (admins[0]._id.toString() === userToDowngrade._id)) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToDowngrade.username} is last admin. Asing another admin.`
+                message: `user ${userIsAdmin.username} is last admin. Asing another admin.`
             });
         }
 
-        await Spaces.findByIdAndUpdate( {_id: spaceId}, {$pull: {admins: {_id: userToDowngrade._id}}});
+        await Spaces.findOneAndUpdate(
+            {_id: spaceId, "users": { "$elemMatch": { "_id": userToDowngrade._id }}},
+            { $set: {"users.$.isAdmin": false, "users.$._id": userToDowngrade._id}});
 
         res.status(200).send({
             status: "success",
@@ -401,12 +393,12 @@ async function getTasks (req, res) {
             });
         }
 
-        // Check if user has joined this space
-        const userExist = space.users.find(e => e._id.toString() === user._id);
-        if (!userExist) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} has not joined this space.`
+                message: `user ${user.username} is not in this space.`
             });
         }
 
@@ -450,12 +442,12 @@ async function createTask (req, res) {
             });
         }
 
-        // Check if user has joined this space
-        const userExist = space.users.find(e => e._id.toString() === user._id);
-        if (!userExist) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} has not joined this space.`
+                message: `user ${user.username} is not in this space.`
             });
         }
 
@@ -497,12 +489,12 @@ async function deleteTask (req, res) {
             });
         }
 
-        // Check if user has joined this space
-        const userExist = space.users.find(u => u._id.toString() === user._id);
-        if (!userExist) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} has not joined this space.`
+                message: `user ${user.username} is not in this space.`
             });
         }
 
@@ -512,14 +504,13 @@ async function deleteTask (req, res) {
             {$pull: {tasks: {_id: task.taskId}}});
 
         if (taskDeleted) {
-
             res.status(200).send({
                 status: "success",
                 message: `task ${task.taskId} deleted.`
             });
         } else {
             res.status(400).send({
-                status: "success",
+                status: "fail",
                 message: `task ${task.taskId} does not exist.`
             });
         }
@@ -546,8 +537,12 @@ async function updateTask (req, res) {
             points: req.body.points
         }
 
+        if (!task.taskname) return res.status(400).send({status: 'fail', message: 'taskname not provided'});
+        if (!task.points) return res.status(400).send({status: 'fail', message: 'task points not provided'});
+        if (!task.taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
+
         // Check if space exists.
-        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, tasks: 1});
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -555,12 +550,12 @@ async function updateTask (req, res) {
             });
         }
 
-        // Check if user has joined this space
-        const userExist = space.users.find(u => u._id.toString() === user._id);
-        if (!userExist) {
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} has not joined this space.`
+                message: `user ${user.username} is not in this space.`
             });
         }
 
@@ -575,7 +570,7 @@ async function updateTask (req, res) {
             });
         } else {
             res.status(400).send({
-                status: "success",
+                status: "fail",
                 message: `task ${task.taskId} does not exist.`
             });
         }
@@ -587,16 +582,190 @@ async function updateTask (req, res) {
     }
 }
 
+async function getActivities (req, res) {
+    try {
+        const spaceId = req.params.spaceId;
+        
+        const user = {
+            username: req.username,
+            _id: req._id
+        };
+        
+        // Check if space exists.
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, activities: 1});
+        if (!space) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `space not found.`
+            });
+        }
+
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not in this space.`
+            });
+        }
+        
+        // Get activities
+        res.status(200).send({
+            status: `success`,
+            activities: space.activities
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+    
+async function createActivity (req, res) {
+    try {
+        const spaceId = req.params.spaceId;
+
+        const user = {
+            username: req.username,
+            _id: req._id
+        };
+
+        const taskId = req.body.taskId;
+        const userActivityId = req.body.userId;
+        
+        // Check if space exists.
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, tasks: 1});
+        if (!space) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `space not found.`
+            });
+        }
+
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user is not in this space.`
+            });
+        }
+
+        // Check if userActivity exists
+        const userActivityExists = space.users.find(u => u._id.toString() === userActivityId._id);
+        if (!userActivityExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user who did activity is not in this space.`
+            });
+        }
+        
+        // Check if task exist
+        const taskExists = space.tasks.find(a => a.task._id === taskId);
+        if (!taskExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `task does not exist in this space.`
+            });
+        }
+
+        const activity = {
+            username: activityExist.username,
+            userId: activityExist._id,
+            color: activityExist.color,
+            taskId: taskExists._id,
+            taskname: taskExists.taskname,
+            points: taskExists.points,
+            date: new Date()
+        }
+
+        const activityDeleted = await Spaces.findOneAndUpdate (
+            {_id: spaceId},
+            {$push: {activities: activity}});
+
+            if (activityDeleted) {
+                res.status(200).send({
+                    status: "success",
+                    message: `activity deleted.`
+                });
+            } else {
+                res.status(400).send({
+                    status: "fail",
+                    message: `activity does not exist.`
+                });
+            }
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+
+
+async function deleteActivity (req, res) {
+    try {
+        const spaceId = req.params.spaceId;
+
+        const user = {
+            username: req.username,
+            _id: req._id
+        };
+
+        const activityId = req.body.activityId;
+        
+        // Check if space exists.
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, activities: 1});
+        if (!space) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `space not found.`
+            });
+        }
+
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user is not in this space.`
+            });
+        }
+
+        // Check if activity exists
+        const activityExists = space.activities.find(a=> a._id.toString() === activityId._id);
+        if (!activityExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `activity does not exist in this space.`
+            });
+        }
+
+        // Remove activity
+        const taskDeleted = await Spaces.findOneAndUpdate(
+            {_id: spaceId, "activities._id": activityId},
+            {$pull: {activities: {_id: activityId}}});
+
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+
 module.exports = {  
-    getSpaces,
-    createSpace,
     deleteSpace,
     joinSpace,
     leaveSpace,
-    addAdmin,
-    removeAdmin,
+    createAdmin,
+    deleteAdmin,
     getTasks,
     createTask,
     deleteTask,
-    updateTask
+    updateTask,
+    getActivities,
+    createActivity,
+    deleteActivity
 };
