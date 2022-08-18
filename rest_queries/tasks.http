@@ -12,41 +12,30 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4M
 
 ### GET TASKS by test
 
-GET http://localhost:8080/spaces/62fd26b353fbcfcabaf4388f/tasks
+GET http://localhost:8080/spaces/62fd8d8463b6b905b2c3260a/tasks
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3YzYyNjkwMWM4MDAxMDA4YzUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA3ODI0NzF9.S_wP0EXZW-AQcGGAdBuOipsb414KycL9-i7Jv4jTGyM
 
 ### GET TASKS by victor
 
-GET http://localhost:8080/spaces/62fd26b353fbcfcabaf4388f/tasks
+GET http://localhost:8080/spaces/62fd8d8463b6b905b2c3260a/tasks
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
-
-### UPDATE TASK by victor
-
-PUT http://localhost:8080/spaces/62fd26b353fbcfcabaf4388f/tasks/62fd28234f9cc94bb27e4ce9
-content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
-
-{
-    "taskname": "conga",
-    "points": 3
-}
 
 ###############################################################################
 
 ### CREATE TASK by test
 
-POST http://localhost:8080/spaces/62fd26b353fbcfcabaf4388f/tasks
+POST http://localhost:8080/spaces/62fd8d8463b6b905b2c3260a/tasks
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3YzYyNjkwMWM4MDAxMDA4YzUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA3ODI0NzF9.S_wP0EXZW-AQcGGAdBuOipsb414KycL9-i7Jv4jTGyM
 
 {
-    "taskname": "Roomba",
-    "points": 1
+    "taskname": "Roomba2",
+    "points": 2
 }
 
 ### CREATE TASK by victor
 
-POST http://localhost:8080/spaces/62fd26b353fbcfcabaf4388f/tasks
+POST http://localhost:8080/spaces/62fd8d8463b6b905b2c3260a/tasks
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
 
@@ -57,6 +46,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4M
 
 ### DELETE TASK by victor
 
-DELETE http://localhost:8080/spaces/62fd26b353fbcfcabaf4388f/tasks/62fd26ce53fbcfcabaf43898
+DELETE http://localhost:8080/spaces/62fd8d8463b6b905b2c3260a/tasks/
+content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
 
+{
+    "taskId": "62fd9010022121f447dcb1fb"
+}
+
+### UPDATE TASK by victor
+
+PUT http://localhost:8080/spaces/62fd8d8463b6b905b2c3260a/tasks/
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
+
+{
+    "taskId": "62fd929e6b93b0cfd862ab55",
+    "taskname": "asdf",
+    "points": 33
+}

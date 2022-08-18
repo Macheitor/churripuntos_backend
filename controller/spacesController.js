@@ -498,7 +498,7 @@ async function deleteTask (req, res) {
         }
 
         // Check if user has joined this space
-        const userExist = space.users.find(u => u._id === user._id);
+        const userExist = space.users.find(u => u._id.toString() === user._id);
         if (!userExist) {
             return res.status(400).send({
                 status: `fail`,
@@ -556,7 +556,7 @@ async function updateTask (req, res) {
         }
 
         // Check if user has joined this space
-        const userExist = space.users.find(u => u._id === user._id);
+        const userExist = space.users.find(u => u._id.toString() === user._id);
         if (!userExist) {
             return res.status(400).send({
                 status: `fail`,
@@ -564,10 +564,9 @@ async function updateTask (req, res) {
             });
         }
 
-        // Update task
         const taskUpdated = await Spaces.findOneAndUpdate(
-            {_id: spaceId, "tasks._id": task.taskId},
-            { $set: {tasks: {taskname: task.taskname, points: task.points, _id: task.taskId}}});
+            {_id: spaceId, "tasks": { "$elemMatch": { "_id": task.taskId }}},
+            { $set: {"tasks.$.taskname": task.taskname, "tasks.$.points": task.points, "tasks.$._id": task.taskId}});
 
         if (taskUpdated) {
             res.status(200).send({
