@@ -13,7 +13,7 @@ const authJWT = async (req, res, next) => {
         if (err) return res.sendStatus(403)
         req.username = decoded.username;
         req.email = decoded.email;
-        req.userId = decoded.userId;
+        req._id = decoded._id;
         next();
     })
 }

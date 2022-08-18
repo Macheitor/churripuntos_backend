@@ -10,7 +10,7 @@ router.route('/')
     .delete(spacesController.deleteSpace);
 
 // Users CRUD
-router.route( '/:spaceId')
+router.route( '/:spaceId/users')
     .put(spacesController.joinSpace)
     .delete(spacesController.leaveSpace);
 

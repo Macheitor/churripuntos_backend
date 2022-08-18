@@ -2,7 +2,7 @@
 
 GET http://localhost:8080/users/
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmY2NDdhZjlkZDAxOTI0MTgzMmZmNjkiLCJ1c2VybmFtZSI6InRlc3QiLCJlbWFpbCI6InZpY3Rvci5tYWNoYWRvLnBlcmV6QGdtYWlsLmNvbSIsImlhdCI6MTY2MDMzMDk1OX0.DLGtwivmKUi6xslA-g9HFOEcTGUOlNnjknPvASYmtoQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3YzYyNjkwMWM4MDAxMDA4YzUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA3ODI0NzF9.S_wP0EXZW-AQcGGAdBuOipsb414KycL9-i7Jv4jTGyM
 
 {
     "search": ""

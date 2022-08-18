@@ -14,9 +14,13 @@ module.exports = async (req, res) => {
 
         if (/\s/.test(username)) return res.status(400).send({ status: "fail", message: `User name cannot have spaces`});
 
-        const userExists = await Users.find({$or: [{username}, {email}]});
+        const userExists = await Users.findOne({$or: [{username}, {email}]});
 
-        if (userExists.length > 0) return res.status(400).send({ status: "fail", message: `username or email already registered`});
+        console.log(userExists)
+        if (userExists) {
+            if (userExists.username === username) return res.status(400).send({ status: "fail", message: `username already registered`});
+            else return res.status(400).send({ status: "fail", message: `email already registered`});
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -24,7 +28,7 @@ module.exports = async (req, res) => {
 
         res.status(201).send({
             status: "success", 
-            message: `user ${username} with ${email} registered`
+            message: `Register successfull.`
         });
         
     } catch(err) {

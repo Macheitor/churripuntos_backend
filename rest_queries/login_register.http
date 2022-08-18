@@ -1,37 +1,41 @@
+### POST REGISTER test
+
 POST http://localhost:8080/register
 content-type: application/json
 
 {
     "username": "test",
-    "email": "victor.machado.perez@gmail.com",
-    "password": "1234"
+    "email": "test@test.com",
+    "password": "test"
 }
 
-###
-POST http://localhost:8080/login
-content-type: application/json
+###### POST REGISTER victor
 
-{
-    "username": "test",
-    "email": "victor.machado.perez@gmail.com",
-    "password": "1234"
-}
-
-###
 POST http://localhost:8080/register
 content-type: application/json
 
 {
     "username": "victor",
-    "email": "victor@gmail.com",
-    "password": "1234"
+    "email": "victor@victor.com",
+    "password": "victor"
 }
 
-###
+### POST LOGIN test
+
+POST http://localhost:8080/login
+content-type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "test"
+}
+
+###### POST LOGIN victor
+
 POST http://localhost:8080/login
 content-type: application/json
 
 {
     "username": "victor",
-    "password": "1234"
+    "password": "victor"
 }

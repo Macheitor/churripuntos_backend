@@ -38,17 +38,9 @@ const initDb = async () => {
             username: {
                 type: String,
                 required: true
-            },
-            userId: {
-                type: String,
-                required: true
             }}], 
         users: [{
             username: {
-                type: String,
-                required: true
-            },
-            userId: {
                 type: String,
                 required: true
             },
@@ -66,10 +58,6 @@ const initDb = async () => {
         }],
         activities: [{
             username: {
-                type: String,
-                required: true
-            },
-            userId: {
                 type: String,
                 required: true
             },

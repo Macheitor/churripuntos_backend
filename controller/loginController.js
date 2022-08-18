@@ -15,9 +15,8 @@ module.exports = async (req, res) => {
         const userEntry = await Users.findOne({$or: [{username}, {email}]});
 
         const user = {
-            userId: userEntry._id,
+            _id: userEntry._id,
             username: userEntry.username,
-            email: userEntry.email
         }
 
         const accessToken = jwt.sign(user, process.env.DEV_ACCESS_TOKEN_SECRET)
