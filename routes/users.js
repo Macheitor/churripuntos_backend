@@ -8,8 +8,9 @@ router.route('/')
     .get(usersController.getUsers);
 
 // Board CRUD
-router.route('/')
+router.route('/:userId')
     .get(usersController.getSpaces)
     .post(usersController.createSpace)
+    .delete(usersController.deleteUser)
 
 module.exports = router;

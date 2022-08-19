@@ -20,7 +20,6 @@ const authJWT = async (req, res, next) => {
 
 const authentication = async (req, res, next) => {
     
-    
     const bcrypt = require('bcrypt');
     const Users = require('mongoose').model("Users")
 

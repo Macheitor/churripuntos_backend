@@ -7,3 +7,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3Y
 {
     "search": ""
 }
+
+### DELETE test
+DELETE http://localhost:8080/users/62ff6beaaa31c5cdb9562045
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZmNmJlYWFhMzFjNWNkYjk1NjIwNDUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA5MDY1MDN9.QV69S_R0tIHBRDNRSuk07rhglH7qZxC16Zwa-g6Ttxo

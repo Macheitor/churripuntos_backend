@@ -2,13 +2,13 @@ const bcrypt = require('bcrypt');
 const Users = require('mongoose').model('Users');
 const {errLogger} = require('../middlewares/logger');
 
-module.exports = async (req, res) => {
+async function registerUser(req, res) {
     try {
         const username = req.body.username;
         const email = req.body.email;
         const password = req.body.password;
 
-        if (!username) return res.status(400).sen({status: 'fail', message: 'username not provided'});
+        if (!username) return res.status(400).send({status: 'fail', message: 'username not provided'});
         if (!email) return res.status(400).send({status: 'fail', message: 'email not provided'});
         if (!password) return res.status(400).send({ status: "fail", message: `password not provided`});
 
@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
 
         const userExists = await Users.findOne({$or: [{username}, {email}]});
 
-        console.log(userExists)
+
         if (userExists) {
             if (userExists.username === username) return res.status(400).send({ status: "fail", message: `username already registered`});
             else return res.status(400).send({ status: "fail", message: `email already registered`});
@@ -37,3 +37,9 @@ module.exports = async (req, res) => {
         errLogger(error.message);
     }
 }
+
+
+
+module.exports = {
+    registerUser
+};
