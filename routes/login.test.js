@@ -3,6 +3,7 @@ const baseURL = "http://localhost:8080";
 
 describe('POST /login', function() {
 
+
   beforeAll(async () => {
 
     const res = await request(baseURL)
@@ -25,12 +26,8 @@ describe('POST /login', function() {
                         .send({
                           username: "test",
                           password: "test"
-                        });
-
+                        })
     expect(res.status).toEqual(200);
-    expect(res.body.user.username).toEqual("test");
-    expect(res.body.user._id).toBeDefined();
-    expect(res.body.accessToken).toBeDefined();
 
     const jwt = res.body.accessToken;
     const userId = res.body.user._id;

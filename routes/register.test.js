@@ -4,27 +4,30 @@ const baseURL = "http://localhost:8080";
 describe('POST /register', function() {
 
   afterAll(async () => {
-    const res = await request(baseURL)
-                        .post('/login')
-                        .set('Content-type', 'application/json')
-                        .send({
-                          username: "test",
-                          password: "test"
-                        });
+    let res, jwt, userId;
+    
+    res = await request(baseURL)
+                  .post('/login')
+                  .set('Content-type', 'application/json')
+                  .send({
+                    username: "test",
+                    password: "test"
+                  });
 
     expect(res.status).toEqual(200);
     expect(res.body.user.username).toEqual("test");
     expect(res.body.user._id).toBeDefined();
     expect(res.body.accessToken).toBeDefined();
 
-    const jwt = res.body.accessToken;
-    const userId = res.body.user._id;
+    jwt = res.body.accessToken;
+    userId = res.body.user._id;
 
-    await request(baseURL)
-            .delete(`/users/${userId}`)
-            .send()
-            .set('Authorization', `Bearer ${jwt}`)
-            .expect(204);
+    res = await request(baseURL)
+                  .delete(`/users/${userId}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt}`)
+
+    expect(res.status).toEqual(204);
   })
 
 
