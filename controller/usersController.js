@@ -5,7 +5,7 @@ const {errLogger} = require('../middlewares/logger');
 async function getUsers (req, res) {
 
     try {
-        const search = req.body.search;
+        const search = req.body.search || "";
 
         let users = await Users.find({username: new RegExp('^' + search)}, {_id: 0, username: 1});
 

@@ -28,7 +28,7 @@ describe('POST /register', function() {
                   .set('Authorization', `Bearer ${jwt}`)
 
     expect(res.status).toEqual(204);
-  })
+  });
 
 
   it('GC: register', async function() {
