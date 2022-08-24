@@ -150,7 +150,7 @@ describe('Users CRUD', function() {
     expect(res.body.spaces[0]._id).toEqual(spaceId1);
     expect(res.body.spaces[0].spacename).toEqual(spacename1);
 
-    // Check spaces for user1
+    // Check spaces for user2
     res = await request(baseURL)
                   .get(`/users/${userId2}`)
                   .send()
