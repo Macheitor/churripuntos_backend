@@ -57,6 +57,45 @@ async function deleteSpace (req, res) {
 }
 
 
+async function getSpaceUsers (req, res) {
+    try {
+        const spaceId = req.params.spaceId;
+
+        const user = {
+            username: req.username,
+            _id: req._id
+        };
+
+        // Check if space exists.
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
+        if (!space) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `space not found.`
+            });
+        }
+
+        // Check if user is in this space
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not in this space.`
+            });
+        }
+
+        res.status(200).send({
+            status: "success",
+            users: space.users
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+
 async function joinSpace (req, res) {
     try {
         const spaceId = req.params.spaceId;
@@ -757,6 +796,7 @@ async function deleteActivity (req, res) {
 
 module.exports = {  
     deleteSpace,
+    getSpaceUsers,
     joinSpace,
     leaveSpace,
     createAdmin,

@@ -57,6 +57,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4M
 ###############################################################################
 ###############################################################################
 
+### Get Users by victor
+
+DELETE  http://localhost:8080/spaces/
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4MTYyNjkwMWM4MDAxMDA4YzkiLCJ1c2VybmFtZSI6InZpY3RvciIsImlhdCI6MTY2MDc4MjUwMX0.XSU3YUfhEJTTz8DxB4oxTr4YVew8Y0WTp5nLNdY2LIw
+
+{
+    "spaceId": "62fe22b00bc1b7df53213cdc"
+}
+###############################################################################
+###############################################################################
+
 ### JOIN SPACE admin:test joining: test
 
 PUT http://localhost:8080/spaces/62fe22b00bc1b7df53213cdc/users

@@ -9,6 +9,7 @@ router.route( '/:spaceId')
 
 // Users CRUD
 router.route( '/:spaceId/users')
+    .get(spacesController.getSpaceUsers)
     .put(spacesController.joinSpace)
     .delete(spacesController.leaveSpace);
 
