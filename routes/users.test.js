@@ -258,7 +258,22 @@ describe('Users CRUD', function() {
     expect(res.status).toEqual(400);
   });
 
-  it('BC: Create space - wrong user credentials', async function() {
+  it('BC: Get spaces - different jwt and userId', async function() {
+
+    let res;
+
+    // Get user1 spaces
+    res = await request(baseURL)
+                  .get(`/users/${userId1}`)
+                  .send({
+                    spacename: spacename1,
+                    color: color1
+                  })
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(400);
+  });
+  
+  it('BC: Create space - different jwt and userId', async function() {
 
     let res;
 
@@ -272,5 +287,19 @@ describe('Users CRUD', function() {
                   .set('Authorization', `Bearer ${jwt2}`);
     expect(res.status).toEqual(400);
   });
-  
+
+  it('BC: Delete space - different jwt and userId', async function() {
+
+    let res;
+
+    // Delete space1 for user1
+    res = await request(baseURL)
+                  .delete(`/users/${userId1}`)
+                  .send({
+                    spacename: spacename1,
+                    color: color1
+                  })
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(400);
+  });
 });
