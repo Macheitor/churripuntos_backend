@@ -255,6 +255,46 @@ async function leaveSpace (req, res) {
     }
 }
 
+async function getSpaceAdmins (req, res) {
+    try {
+        const spaceId = req.params.spaceId;
+
+        const user = {
+            username: req.username,
+            _id: req._id
+        };
+
+        // Check if space exists.
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
+        if (!space) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `space not found.`
+            });
+        }
+
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === user._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${user.username} is not in this space.`
+            });
+        }
+
+        const admins = space.users.filter(u => u.isAdmin)
+
+        res.status(200).send({
+            status: "success",
+            admins
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
 
 async function createAdmin (req, res) {
     try {
@@ -379,9 +419,8 @@ async function deleteAdmin (req, res) {
             });
         }
 
-
         // Check if user to make admin exist
-        const userToDownIsAdmin = space.users.find(u => u._id.toString() === userTouserToDownIsAdminAdmin._id);
+        const userToDownIsAdmin = space.users.find(u => u._id.toString() === userToDowngrade._id);
         if (!userToDownIsAdmin) {
             return res.status(400).send({
                 status: `fail`,
@@ -799,6 +838,7 @@ module.exports = {
     getSpaceUsers,
     joinSpace,
     leaveSpace,
+    getSpaceAdmins,
     createAdmin,
     deleteAdmin,
     getTasks,

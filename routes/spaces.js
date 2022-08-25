@@ -15,6 +15,7 @@ router.route( '/:spaceId/users')
 
 // Admins CRUD
 router.route('/:spaceId/admins')
+    .get(spacesController.getSpaceAdmins)
     .post(spacesController.createAdmin)
     .delete(spacesController.deleteAdmin);
 
