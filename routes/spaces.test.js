@@ -83,11 +83,9 @@ afterAll(async () => {
 
 })
 
-describe('Users CRUD', function() {
+describe('Spaces users CRUD', function() {
 
-  // NOTE: Delete space already tested in user.test.js when testing Create Space
-  // it('GC: Delete space', async function() {
-  // });
+  // NOTE: "GC:Delete space" already tested in user.test.js when testing Create Space
 
   it('GC: Join space', async function() {
     let res;
@@ -116,7 +114,7 @@ describe('Users CRUD', function() {
       expect(res.status).toEqual(200);
       expect(res.body.status).toEqual('success');
 
-      // Get only the usernames for spaceId1
+      // Get only the usernames
       const spaceId1Usernames = res.body.users.map(u => u.username);
       expect(spaceId1Usernames).toEqual(expect.arrayContaining([username1]));
       expect(spaceId1Usernames).toEqual(expect.not.arrayContaining([username2]));
@@ -161,7 +159,7 @@ describe('Users CRUD', function() {
       expect(res.status).toEqual(200);
       expect(res.body.status).toEqual('success');
 
-      // Get only the usernames for spaceId1
+      // Get only the usernames
       const spaceId1Usernames = res.body.users.map(u => u.username);
       expect(spaceId1Usernames).toEqual(expect.arrayContaining([username1, username2]));
     }
@@ -201,13 +199,27 @@ describe('Users CRUD', function() {
     // Check users of spaceId1
     {
       res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId1Usernames = res.body.users.map(u => u.username);
+      expect(spaceId1Usernames).toEqual(expect.arrayContaining([username1, username2]));
+    }
+
+    // Check users of spaceId2
+    {
+      res = await request(baseURL)
                     .get(`/spaces/${spaceId2}/users`)
                     .send()
                     .set('Authorization', `Bearer ${jwt2}`);
       expect(res.status).toEqual(200);
       expect(res.body.status).toEqual('success');
 
-      // Get only the usernames for spaceId1
+      // Get only the usernames
       const spaceId2Usernames = res.body.users.map(u => u.username);
       expect(spaceId2Usernames).toEqual(expect.arrayContaining([username2]));
       expect(spaceId2Usernames).toEqual(expect.not.arrayContaining([username1]));
@@ -246,13 +258,27 @@ describe('Users CRUD', function() {
     // Check users of spaceId1
     {
       res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId1Usernames = res.body.users.map(u => u.username);
+      expect(spaceId1Usernames).toEqual(expect.arrayContaining([username1, username2]));
+    }
+
+    // Check users of spaceId2
+    {
+      res = await request(baseURL)
                     .get(`/spaces/${spaceId2}/users`)
                     .send()
                     .set('Authorization', `Bearer ${jwt2}`);
       expect(res.status).toEqual(200);
       expect(res.body.status).toEqual('success');
 
-      // Get only the usernames for spaceId1
+      // Get only the usernames
       const spaceId2Usernames = res.body.users.map(u => u.username);
       expect(spaceId2Usernames).toEqual(expect.arrayContaining([username1, username2]));
     }
@@ -282,6 +308,20 @@ describe('Users CRUD', function() {
                   .set('Authorization', `Bearer ${jwt1}`);
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
+
+    // Check users of spaceId2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId2}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId2Usernames = res.body.users.map(u => u.username);
+      expect(spaceId2Usernames).toEqual(expect.arrayContaining([username1, username2]));
+    }
 
     // Check spaces for userId1
     res = await request(baseURL)
@@ -327,15 +367,266 @@ describe('Users CRUD', function() {
     expect(res.body.status).toEqual('success');
     expect(res.body.spaces.length).toEqual(0);
   });
+
+
+  it('GC: Leave space', async function() {
+
+    let res;
+    let spaceId1, spaceId2;
+
+    // Create space1 by user1
+    res = await request(baseURL)
+                  .post(`/users/${userId1}`)
+                  .send({
+                    spacename: spacename1,
+                    color: color1
+                  })
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.space.spacename).toEqual(spacename1);
+    expect(res.body.space.spaceId).toBeDefined();
+    spaceId1 = res.body.space.spaceId;
+
+    // User2 joins the spaceId1
+    res = await request(baseURL)
+                  .put(`/spaces/${spaceId1}/users`)
+                  .send({
+                    username: username2,
+                    _id: userId2,
+                    color: color2
+                  })
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Create space2 by user2
+    res = await request(baseURL)
+                  .post(`/users/${userId2}`)
+                  .send({
+                    spacename: spacename2,
+                    color: color2
+                  })
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.space.spacename).toEqual(spacename2);
+    expect(res.body.space.spaceId).toBeDefined();
+    spaceId2 = res.body.space.spaceId;
+
+    // User1 joins the spaceId2
+    res = await request(baseURL)
+                  .put(`/spaces/${spaceId2}/users`)
+                  .send({
+                    username: username1,
+                    _id: userId1,
+                    color: color1
+                  })
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check users of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId1Usernames = res.body.users.map(u => u.username);
+      expect(spaceId1Usernames).toEqual(expect.arrayContaining([username1, username2]));
+    }
+
+    // Check users of spaceId2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId2}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId2Usernames = res.body.users.map(u => u.username);
+      expect(spaceId2Usernames).toEqual(expect.arrayContaining([username1, username2]));
+    }
+
+    // Check spaces for userId1
+    res = await request(baseURL)
+                  .get(`/users/${userId1}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(2);
+
+    // Check spaces for userId2
+    res = await request(baseURL)
+                  .get(`/users/${userId2}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(2);
+
+    // User2 leaves the spaceId1
+    res = await request(baseURL)
+                  .delete(`/spaces/${spaceId1}/users`)
+                  .send({
+                    username: username2,
+                    _id: userId2,
+                  })
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check users of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId1Usernames = res.body.users.map(u => u.username);
+      expect(spaceId1Usernames).toEqual(expect.arrayContaining([username1]));
+      expect(spaceId1Usernames).toEqual(expect.not.arrayContaining([username2]));
+    }
+
+    // Check users of spaceId2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId2}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId2Usernames = res.body.users.map(u => u.username);
+      expect(spaceId2Usernames).toEqual(expect.arrayContaining([username1, username2]));
+    }
+
+    // Check spaces for userId1
+    res = await request(baseURL)
+                  .get(`/users/${userId1}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(2);
+
+    // Check spaces for userId2
+    res = await request(baseURL)
+                  .get(`/users/${userId2}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(1);
+
+    // User1 leaves the spaceId2
+    res = await request(baseURL)
+                  .delete(`/spaces/${spaceId2}/users`)
+                  .send({
+                    username: username1,
+                    _id: userId1,
+                  })
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check users of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/users`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+
+      // Get only the usernames
+      const spaceId1Usernames = res.body.users.map(u => u.username);
+      expect(spaceId1Usernames).toEqual(expect.arrayContaining([username1]));
+      expect(spaceId1Usernames).toEqual(expect.not.arrayContaining([username2]));
+    }
+    
+    // Check users of spaceId2
+    {
+      res = await request(baseURL)
+      .get(`/spaces/${spaceId2}/users`)
+      .send()
+      .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      
+      // Get only the usernames
+      const spaceId2Usernames = res.body.users.map(u => u.username);
+      expect(spaceId2Usernames).toEqual(expect.arrayContaining([username2]));
+      expect(spaceId2Usernames).toEqual(expect.not.arrayContaining([username1]));
+    }
+
+    // Check spaces for userId1
+    res = await request(baseURL)
+                  .get(`/users/${userId1}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(1);
+
+    // Check spaces for userId2
+    res = await request(baseURL)
+                  .get(`/users/${userId2}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(1);
+
+    // Delete spaceId1 
+    res = await request(baseURL)
+                  .delete(`/spaces/${spaceId1}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Delete spaceId2
+    res = await request(baseURL)
+                  .delete(`/spaces/${spaceId2}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check spaces for userId1
+    res = await request(baseURL)
+                  .get(`/users/${userId1}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(0);
+
+    // Check spaces for userId2
+    res = await request(baseURL)
+                  .get(`/users/${userId2}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.spaces.length).toEqual(0);
+  });
 });
 
 /*
 
-
-// Users CRUD
-router.route( '/:spaceId/users')
-    .put(spacesController.joinSpace)
-    .delete(spacesController.leaveSpace);
 
 // Admins CRUD
 router.route('/:spaceId/admins')
