@@ -1,19 +1,23 @@
 const request = require('supertest')
 const baseURL = "http://localhost:8080";
 
-let jwt1, userId1;
-const username1 = "test1";
-const email1 = "test1";
-const password1 = "test1";
-const spacename1 = "test1";
+let jwt1, userId1, taskId1;
+const username1 = "user1";
+const email1 = "email1";
+const password1 = "pass1";
+const spacename1 = "space1";
 const color1 = "0xFF0000";
+const taskname1 = "task1";
+const points1 = 1;
 
-let jwt2, userId2;
-const username2 = "test2";
-const email2 = "test2";
-const password2 = "test2";
-const spacename2 = "test2";
+let jwt2, userId2, taskId2;
+const username2 = "user2";
+const email2 = "email2";
+const password2 = "pass2";
+const spacename2 = "space2";
 const color2 = "0x00FF00";
+const taskname2 = "task2";
+const points2 = 2;
 
 // Register users test1 & test2
 beforeAll(async () => {
@@ -47,7 +51,7 @@ beforeAll(async () => {
                 });
   expect(res.status).toEqual(200);
 
-  jwt1 = res.body.accessToken;
+  jwt1 = res.body.user.accessToken;
   userId1 = res.body.user._id;
 
   res = await request(baseURL)
@@ -59,10 +63,9 @@ beforeAll(async () => {
                 });
   expect(res.status).toEqual(200);
 
-  jwt2 = res.body.accessToken;
+  jwt2 = res.body.user.accessToken;
   userId2 = res.body.user._id;
 });
-
 
 // Delete user test1 & test2
 afterAll(async () => {
@@ -368,7 +371,6 @@ describe('Spaces users CRUD', function() {
     expect(res.body.spaces.length).toEqual(0);
   });
 
-
   it('GC: Leave space', async function() {
 
     let res;
@@ -623,8 +625,13 @@ describe('Spaces users CRUD', function() {
     expect(res.body.status).toEqual('success');
     expect(res.body.spaces.length).toEqual(0);
   });
+
+});
+
+
+describe('Spaces admins CRUD', function() {
   
-  it('GC: Get space admins', async function() {
+  it('GC: Get admins', async function() {
   
     let res;
     let spaceId1, spaceId2;
@@ -722,8 +729,7 @@ describe('Spaces users CRUD', function() {
     expect(res.body.spaces.length).toEqual(0);
   });
 
-
-  it('GC: Create space admins', async function() {
+  it('GC: Create admin', async function() {
   
     let res;
     let spaceId1, spaceId2;
@@ -1093,7 +1099,7 @@ describe('Spaces users CRUD', function() {
     expect(res.body.spaces.length).toEqual(0);
   });
 
-  it('GC: Delete space admins', async function() {
+  it('GC: Delete admin', async function() {
   
     let res;
     let spaceId1, spaceId2;
@@ -1456,20 +1462,290 @@ describe('Spaces users CRUD', function() {
 
 });
 
+describe('Spaces tasks CRUD', function() {
+
+  // NOTE: Get task is already tested in Create space tasks test
+
+  it('GC: Create task', async function() {
+  
+    let res;
+    let spaceId1;
+
+    // Create space1 by user1
+    res = await request(baseURL)
+                  .post(`/users/${userId1}`)
+                  .send({
+                    spacename: spacename1,
+                    color: color1
+                  })
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.space.spacename).toEqual(spacename1);
+    expect(res.body.space.spaceId).toBeDefined();
+    spaceId1 = res.body.space.spaceId;
+
+    // Check tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(0);
+    }
+
+    // Create task1 in spaceId1 by user1
+    res = await request(baseURL)
+        .post(`/spaces/${spaceId1}/tasks`)
+        .send({
+          taskname: taskname1,
+          points: points1
+        })
+        .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Get tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(1);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+      expect(res.body.tasks[0]._id).toBeDefined();
+      taskId1 = res.body.tasks[0]._id;
+    }
+
+    // Check tasks of spaceId2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId2}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(0);
+    }
+
+    // Create task2 in spaceId1 by user2
+    res = await request(baseURL)
+        .post(`/spaces/${spaceId1}/tasks`)
+        .send({
+          taskname: taskname2,
+          points: points2
+        })
+        .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(2);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+      expect(res.body.tasks[1].taskname).toEqual(taskname2);
+      expect(res.body.tasks[1].points).toEqual(points2);
+    }
+
+    // Check tasks of spaceId2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId2}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(0);
+    }
+
+    // Create task1 in spaceId2 by user1
+    res = await request(baseURL)
+        .post(`/spaces/${spaceId2}/tasks`)
+        .send({
+          taskname: taskname1,
+          points: points1
+        })
+        .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(2);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+      expect(res.body.tasks[1].taskname).toEqual(taskname2);
+      expect(res.body.tasks[1].points).toEqual(points2);
+    }
+
+    // Check tasks of spaceId2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId2}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(1);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+    }
+
+    // Create task2 in spaceId2 by user2
+    res = await request(baseURL)
+        .post(`/spaces/${spaceId2}/tasks`)
+        .send({
+          taskname: taskname2,
+          points: points2
+        })
+        .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(2);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+      expect(res.body.tasks[1].taskname).toEqual(taskname2);
+      expect(res.body.tasks[1].points).toEqual(points2);
+    }
+
+    // Check tasks of spaceId2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId2}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt2}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(2);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+      expect(res.body.tasks[1].taskname).toEqual(taskname2);
+      expect(res.body.tasks[1].points).toEqual(points2);
+    }
+
+    // Delete spaceId1 
+    res = await request(baseURL)
+                  .delete(`/spaces/${spaceId1}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Delete spaceId2
+    res = await request(baseURL)
+                  .delete(`/spaces/${spaceId2}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt2}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+  });
 
 
+  it('GC: Update task', async function() {
+  
+    let res;
+    let spaceId1, spaceId2;
+
+    // Create space1 by user1
+    res = await request(baseURL)
+                  .post(`/users/${userId1}`)
+                  .send({
+                    spacename: spacename1,
+                    color: color1
+                  })
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+    expect(res.body.space.spacename).toEqual(spacename1);
+    expect(res.body.space.spaceId).toBeDefined();
+    spaceId1 = res.body.space.spaceId;
+
+    // Check tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(0);
+    }
+
+    // Create task1 in spaceId1 by user1
+    res = await request(baseURL)
+        .post(`/spaces/${spaceId1}/tasks`)
+        .send({
+          taskname: taskname1,
+          points: points1
+        })
+        .set('Authorization', `Bearer ${jwt1}`);
+        console.log(res.body)
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+
+    // Check tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .send()
+                    .set('Authorization', `Bearer ${jwt1}`);
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(1);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+    }
+
+    // Update task1 in spaceId1 by user1
+    res = await request(baseURL)
+        .post(`/spaces/${spaceId1}/tasks`)
+        .send({
+          taskname: taskname1,
+          points: points1
+        })
+        .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
 
 
+    // Delete spaceId1 
+    res = await request(baseURL)
+                  .delete(`/spaces/${spaceId1}`)
+                  .send()
+                  .set('Authorization', `Bearer ${jwt1}`);
+    expect(res.status).toEqual(200);
+    expect(res.body.status).toEqual('success');
+  });
+});
 
 /*
-
-
-// Admins CRUD
-router.route('/:spaceId/admins')
-    .get(spacesController.getSpaceAdmins)
-    .post(spacesController.createAdmin)
-    .delete(spacesController.deleteAdmin);
-
 // Tasks CRUD
 router.route('/:spaceId/tasks')
     .get(spacesController.getTasks)

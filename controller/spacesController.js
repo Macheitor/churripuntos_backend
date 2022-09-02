@@ -502,17 +502,33 @@ async function createTask (req, res) {
             _id: req._id
         };
 
+        // Check given parameters
+        if (!req.body.taskname) return res.status(400).send({status: 'fail', message: 'taskname not provided'});
+        if (!req.body.points) return res.status(400).send({status: 'fail', message: 'task points not provided'});
+        
+        // Remove start and end spaces
         const task = {
-            taskname: req.body.taskname,
+            taskname: req.body.taskname.replace(/^\s+|\s+$/g, ""),
             points: req.body.points
         }
+        
+        // Check if it is a valid taskname
+        if (task.taskname === '') {
+            return res.status(400).send({
+                status: `fail`,
+                message: `Invalid taskname.`
+            });
+        }
 
-        // Check given parameters
-        if (!task.taskname) return res.status(400).send({status: 'fail', message: 'taskname not provided'});
-        if (!task.points) return res.status(400).send({status: 'fail', message: 'task points not provided'});
+        if (!Number.isInteger(task.points) || (task.points < 0)) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `Invalid points.`
+            });
+        }
 
         // Check if space exists.
-        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, tasks: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -526,6 +542,15 @@ async function createTask (req, res) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
+            });
+        }
+
+        // Check if task already exists
+        const taskExists = space.tasks.find(t => t.taskname === task.taskname);
+        if (taskExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `task ${task.taskname} already exists.`
             });
         }
 
@@ -602,6 +627,10 @@ async function deleteTask (req, res) {
 
 async function updateTask (req, res) {
     try {
+        if (!req.body.taskname) return res.status(400).send({status: 'fail', message: 'taskname not provided'});
+        if (!req.body.points) return res.status(400).send({status: 'fail', message: 'task points not provided'});
+        if (!req.body.taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
+        
         const spaceId = req.params.spaceId;
 
         const user = {
@@ -611,16 +640,27 @@ async function updateTask (req, res) {
 
         const task = {
             taskId: req.body.taskId,
-            taskname: req.body.taskname, 
+            taskname: req.body.taskname.replace(/^\s+|\s+$/g, ""),
             points: req.body.points
         }
+  
+        // Check if it is a valid taskname
+        if (task.taskname === '') {
+            return res.status(400).send({
+                status: `fail`,
+                message: `Invalid taskname.`
+            });
+        }
 
-        if (!task.taskname) return res.status(400).send({status: 'fail', message: 'taskname not provided'});
-        if (!task.points) return res.status(400).send({status: 'fail', message: 'task points not provided'});
-        if (!task.taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
+        if (!Number.isInteger(task.points) || (task.points < 0)) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `Invalid points.`
+            });
+        }
 
         // Check if space exists.
-        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
+        const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, tasks: 1});
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -637,14 +677,26 @@ async function updateTask (req, res) {
             });
         }
 
+        // Check if task already exists
+        const taskExists = space.tasks.find(t => t.taskname === task.taskname);
+        if (taskExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `task ${task.taskname} already exists.`
+            });
+        }
+
+        // Update task
         const taskUpdated = await Spaces.findOneAndUpdate(
             {_id: spaceId, "tasks": { "$elemMatch": { "_id": task.taskId }}},
             { $set: {"tasks.$.taskname": task.taskname, "tasks.$.points": task.points, "tasks.$._id": task.taskId}});
-
+        
+        // Check if a task was updated
         if (taskUpdated) {
             res.status(200).send({
                 status: "success",
-                message: `task ${task.taskId} updated.`
+                message: `task updated.`,
+                task
             });
         } else {
             res.status(400).send({
@@ -758,21 +810,15 @@ async function createActivity (req, res) {
             date: new Date()
         }
 
-        const activityDeleted = await Spaces.findOneAndUpdate (
+        const activityCreated = await Spaces.findOneAndUpdate (
             {_id: spaceId},
             {$push: {activities: activity}});
 
-            if (activityDeleted) {
-                res.status(200).send({
-                    status: "success",
-                    message: `activity deleted.`
-                });
-            } else {
-                res.status(400).send({
-                    status: "fail",
-                    message: `activity does not exist.`
-                });
-            }
+        res.status(200).send({
+            status: "success",
+            activity
+        });
+
 
     } catch(err) {
         const error = { status: 'error', message: `${err.name}: ${err.message}` }; 

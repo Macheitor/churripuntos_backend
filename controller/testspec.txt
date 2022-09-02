@@ -1,0 +1,84 @@
+it ('GC: Get task - 1 space with 0 task', async function () {}
+it ('GC: Get task - 1 space with 1 task', async function () {}
+it ('GC: Get task - 1 space with 2 tasks', async function () {}
+it ('GC: Get task - 2 spaces with 1 task each using different user roles (1 admin - 1 user)', async function () {}
+it ('GC: Get task - 2 spaces with 2 tasks', async function () {}
+it ('BC: Get task - spaceId does not exists', async function () {}
+it ('BC: Get task - user does not exist', async function () {}
+it ('BC: Get task - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+
+it ('GC: Create task - 1 space with 0 task', async function () {}
+it ('GC: Create task - 1 space with 1 task', async function () {}
+it ('GC: Create task - 1 space with 2 tasks', async function () {}
+it ('GC: Create task - 2 spaces with 1 task each using different user roles (1 admin - 1 user)', async function () {}
+it ('GC: Create task - 2 spaces with 2 tasks', async function () {}
+it ('BC: Create task - spaceId does not exists', async function () {}
+it ('BC: Create task - user does not exist', async function () {}
+it ('BC: Create task - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+it ('GC: Create task - 1 space with 1 task', async function () {}
+it ('GC: Create task - 1 space with 2 tasks created by different user roles (1 admin - 1 user)', async function () {}
+it ('GC: Create task - 2 spaces with 1 task each', async function () {}
+it ('GC: Create task - 2 spaces with 2 tasks each', async function () {}
+it ('BC: Create task - spaceId does not exists', async function () {}
+it ('BC: Create task - user does not exist', async function () {}
+it ('BC: Create task - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+it ('BC: Create task - taskname not provided', async function () {}
+it ('BC: Create task - points not provided', async function () {}
+it ('BC: Create task - invalid taskname value', async function () {}
+it ('BC: Create task - invalid points values', async function () {}
+it ('BC: Create task - task already exist', async function () {}
+
+it ('GC: Update task - 1 space with 1 task gets updated', async function () {}
+it ('GC: Update task - 1 space with 2 tasks both updated by different user roles (1 admin - 1 user)', async function () {}
+it ('GC: Update task - 2 spaces with 1 task each both updated', async function () {}
+it ('GC: Update task - 2 spaces with 2 tasks each all updated', async function () {}
+it ('BC: Update task - spaceId does not exists', async function () {}
+it ('BC: Update task - user does not exist', async function () {}
+it ('BC: Update task - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+it ('BC: Update task - taskname not provided', async function () {}
+it ('BC: Update task - points not provided', async function () {}
+it ('BC: Update task - taskId not provided', async function () {}
+it ('BC: Update task - invalid taskname value', async function () {}
+it ('BC: Update task - invalid points value', async function () {}
+it ('BC: Update task - taskId does not exist', async function () {}
+it ('BC: Update task - taskname already exist', async function () {}
+it ('GC: Delete task - 1 space with 1 task gets deleted', async function () {}
+it ('GC: Delete task - 1 space with 2 tasks both deleted by different user roles (1 admin - 1 user)', async function () {}
+it ('GC: Delete task - 2 spaces with 1 task each both deleted', async function () {}
+it ('GC: Delete task - 2 spaces with 2 tasks each all deleted', async function () {}
+it ('BC: Delete task - spaceId does not exists', async function () {}
+it ('BC: Delete task - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+it ('BC: Delete task - taskId not provided', async function () {}
+it ('BC: Delete task - taskId does not exist', async function () {}
+it ('BC: Delete task - user does not belong to space', async function () {}
+
+it ('GC: Get activities - 1 space with 0 activities', async function () {}
+it ('GC: Get activities - 1 space with 1 activity', async function () {}
+it ('GC: Get activities - 1 space with 2 activities', async function () {}
+it ('GC: Get activities - 2 spaces with 1 activity each using different user roles (1 admin - 1 user)', async function () {}
+it ('GC: Get activities - 2 spaces with 2 activities', async function () {}
+it ('BC: Get activities - spaceId does not exists', async function () {}
+it ('BC: Get activities - user does not exist', async function () {}
+it ('BC: Get activities - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+
+it ('GC: Create activity - 1 space with 1 activity', async function () {}
+it ('GC: Create activity - 1 space with 2 activity from different user roles (1 admin - 1 user)', async function () {}
+it ('GC: Create activity - 2 spaces with 1 activity each', async function () {}
+it ('GC: Create activity - 2 spaces with 2 activities each', async function () {}
+it ('BC: Create activity - spaceId does not exists', async function () {}
+it ('BC: Create activity - user does not exist', async function () {}
+it ('BC: Create activity - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+it ('BC: Create activity - taskId not provided', async function () {}
+it ('BC: Create activity - userId not provided', async function () {}
+it ('BC: Create activity - taskId does not exist', async function () {}
+it ('BC: Create activity - userId does not exist (who does the activity)', async function () {}
+
+it ('GC: Delete activity - 1 space with 1 activity gets deleted', async function () {}
+it ('GC: Delete activity - 1 space with 2 activities both deleted', async function () {}
+it ('GC: Delete activity - 2 space with 1 activity each both deleted', async function () {}
+it ('GC: Delete activity - 2 space with 2 activity all deleted', async function () {}
+it ('BC: Delete activity - spaceId does not exists', async function () {}
+it ('BC: Delete activity - user does not exist', async function () {}
+it ('BC: Delete activity - invalid jwt (bad encryption - good encryption different secret key - expired)', async function () {}
+it ('BC: Delete activity - activityId not provided', async function () {}
+it ('BC: Delete activity - activityId does not exist', async function () {}

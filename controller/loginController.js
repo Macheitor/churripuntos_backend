@@ -22,9 +22,12 @@ module.exports = async (req, res) => {
         const accessToken = jwt.sign(user, process.env.DEV_ACCESS_TOKEN_SECRET)
 
         res.status(200).send({
-            status: "success", 
-            user,
-            accessToken
+            status: "success",
+            user: {
+                _id: user._id,
+                username: user.username,
+                accessToken
+            }
         });
 
      } catch(err) {

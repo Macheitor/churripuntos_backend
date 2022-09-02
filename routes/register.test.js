@@ -17,9 +17,9 @@ describe('POST /register', function() {
     expect(res.status).toEqual(200);
     expect(res.body.user.username).toEqual("test");
     expect(res.body.user._id).toBeDefined();
-    expect(res.body.accessToken).toBeDefined();
+    expect(res.body.user.accessToken).toBeDefined();
 
-    jwt = res.body.accessToken;
+    jwt = res.body.user.accessToken;
     userId = res.body.user._id;
 
     res = await request(baseURL)

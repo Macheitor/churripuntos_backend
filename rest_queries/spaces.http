@@ -13,9 +13,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc4M
 
 ### CREATE SPACE by test
 
-POST http://localhost:8080/spaces
+POST http://localhost:8080/users/63088c59cd38d1bc41c138bd
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmZkODc3YzYyNjkwMWM4MDAxMDA4YzUiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjA3ODI0NzF9.S_wP0EXZW-AQcGGAdBuOipsb414KycL9-i7Jv4jTGyM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzA4OGM1OWNkMzhkMWJjNDFjMTM4YmQiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjE1MDUwMzR9.83xPgskNdeVjfLprAfoZNAAG1cx6OAOhgQUXxKVZes8
 
 {
     "spacename": "space by test",

@@ -16,7 +16,6 @@ async function registerUser(req, res) {
 
         const userExists = await Users.findOne({$or: [{username}, {email}]});
 
-
         if (userExists) {
             if (userExists.username === username) return res.status(400).send({ status: "fail", message: `username already registered`});
             else return res.status(400).send({ status: "fail", message: `email already registered`});
@@ -28,7 +27,7 @@ async function registerUser(req, res) {
 
         res.status(201).send({
             status: "success", 
-            message: `Register successfull.`
+            user: {username, email}
         });
         
     } catch(err) {
@@ -37,8 +36,6 @@ async function registerUser(req, res) {
         errLogger(error.message);
     }
 }
-
-
 
 module.exports = {
     registerUser

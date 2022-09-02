@@ -47,7 +47,7 @@ beforeAll(async () => {
                 });
   expect(res.status).toEqual(200);
 
-  jwt1 = res.body.accessToken;
+  jwt1 = res.body.user.accessToken;
   userId1 = res.body.user._id;
 
   res = await request(baseURL)
@@ -59,7 +59,7 @@ beforeAll(async () => {
                 });
   expect(res.status).toEqual(200);
 
-  jwt2 = res.body.accessToken;
+  jwt2 = res.body.user.accessToken;
   userId2 = res.body.user._id;
 });
 

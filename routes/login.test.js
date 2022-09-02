@@ -25,7 +25,7 @@ describe('POST /login', function() {
                       });
     expect(res.status).toEqual(200);
 
-    const jwt = res.body.accessToken;
+    const jwt = res.body.user.accessToken;
     const userId = res.body.user._id;
 
     res = await request(baseURL)
@@ -41,12 +41,11 @@ describe('POST /login', function() {
                         .post('/login')
                         .set('Content-type', 'application/json')
                         .send({username: "test", password: "test"});
-
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
     expect(res.body.user.username).toEqual("test");
     expect(res.body.user._id).toBeDefined();
-    expect(res.body.accessToken).toBeDefined();
+    expect(res.body.user.accessToken).toBeDefined();
   });
 
   it('GC: login using email', async function() {
@@ -59,7 +58,7 @@ describe('POST /login', function() {
     expect(res.body.status).toEqual('success');
     expect(res.body.user.username).toEqual("test");
     expect(res.body.user._id).toBeDefined();
-    expect(res.body.accessToken).toBeDefined();
+    expect(res.body.user.accessToken).toBeDefined();
   });
 
   it('GC: login using username and email', async function() {
@@ -72,7 +71,7 @@ describe('POST /login', function() {
     expect(res.body.status).toEqual('success');
     expect(res.body.user.username).toEqual("test");
     expect(res.body.user._id).toBeDefined();
-    expect(res.body.accessToken).toBeDefined();
+    expect(res.body.user.accessToken).toBeDefined();
   });
 
   it('BC: login using wrong username', async function() {
