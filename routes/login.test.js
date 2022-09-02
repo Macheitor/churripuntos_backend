@@ -3,6 +3,7 @@ const baseURL = "http://localhost:8080";
 
 describe('POST /login', function() {
 
+  // Register user test
   beforeAll(async () => {
     let res = await request(baseURL)
                       .post("/register")
@@ -35,7 +36,6 @@ describe('POST /login', function() {
     expect(res.status).toEqual(204);
   });
 
-
   it('GC: login using username', async function() {
     const res = await request(baseURL)
                         .post('/login')
@@ -63,9 +63,9 @@ describe('POST /login', function() {
 
   it('GC: login using username and email', async function() {
     const res = await request(baseURL)
-      .post('/login')
-      .set('Content-type', 'application/json')
-      .send({username: "test", email: "test@test.com", password: "test"})
+                        .post('/login')
+                        .set('Content-type', 'application/json')
+                        .send({username: "test", email: "test@test.com", password: "test"})
 
     expect(res.status).toEqual(200);
     expect(res.body.status).toEqual('success');
