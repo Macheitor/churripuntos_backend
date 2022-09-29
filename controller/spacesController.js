@@ -764,6 +764,10 @@ async function createActivity (req, res) {
         const taskId = req.body.taskId;
         const userActivityId = req.body.userId;
         
+        // Check given parameters
+        if (!taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
+        if (!userActivityId) return res.status(400).send({status: 'fail', message: 'userId not provided'});
+
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, tasks: 1});
         if (!space) {
@@ -783,16 +787,17 @@ async function createActivity (req, res) {
         }
 
         // Check if userActivity exists
-        const userActivityExists = space.users.find(u => u._id.toString() === userActivityId._id);
+        const userActivityExists = space.users.find(u => u._id.toString() === userActivityId);
         if (!userActivityExists) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user who did activity is not in this space.`
             });
         }
-        
+
         // Check if task exist
-        const taskExists = space.tasks.find(a => a.task._id === taskId);
+        const taskExists = space.tasks.find(t => t._id.toString() === taskId);
+
         if (!taskExists) {
             return res.status(400).send({
                 status: `fail`,
@@ -801,16 +806,16 @@ async function createActivity (req, res) {
         }
 
         const activity = {
-            username: activityExist.username,
-            userId: activityExist._id,
-            color: activityExist.color,
+            username: userActivityExists.username,
+            userId: userActivityExists._id,
+            color: userActivityExists.color,
             taskId: taskExists._id,
             taskname: taskExists.taskname,
             points: taskExists.points,
             date: new Date()
         }
 
-        const activityCreated = await Spaces.findOneAndUpdate (
+        await Spaces.findOneAndUpdate (
             {_id: spaceId},
             {$push: {activities: activity}});
 
@@ -839,6 +844,8 @@ async function deleteActivity (req, res) {
 
         const activityId = req.body.activityId;
         
+        if (!activityId) return res.status(400).send({status: 'fail', message: 'activityId not provided'});
+
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, activities: 1});
         if (!space) {
@@ -858,7 +865,7 @@ async function deleteActivity (req, res) {
         }
 
         // Check if activity exists
-        const activityExists = space.activities.find(a=> a._id.toString() === activityId._id);
+        const activityExists = space.activities.find(a=> a._id.toString() === activityId);
         if (!activityExists) {
             return res.status(400).send({
                 status: `fail`,
@@ -867,10 +874,21 @@ async function deleteActivity (req, res) {
         }
 
         // Remove activity
-        const taskDeleted = await Spaces.findOneAndUpdate(
+        const activityDeleted = await Spaces.findOneAndUpdate(
             {_id: spaceId, "activities._id": activityId},
             {$pull: {activities: {_id: activityId}}});
 
+        if (activityDeleted) {
+            res.status(200).send({
+                status: "success",
+                message: `activity ${activityId} deleted.`
+            });
+        } else {
+            res.status(400).send({
+                status: "fail",
+                message: `activity ${activityId} does not exist.`
+            });
+        }
 
     } catch(err) {
         const error = { status: 'error', message: `${err.name}: ${err.message}` }; 

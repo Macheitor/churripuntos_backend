@@ -2,37 +2,30 @@ const request = require('supertest')
 const baseURL = "http://localhost:8080";
 
 let jwt1, userId1, taskId1, spaceId1;
-const username1 = "user1";
-const email1 = "email1";
-const password1 = "pass1";
-const password1updated = "pass1updated";
-const spacename1 = "space1";
-const spacename1updated = "space1updated";
-const color1 = "0xFF0000";
-const color1updated = "0xFFFF00";
-const taskname1 = "task1";
-const taskname1updated = "task1updated";
+const username1 = "space_tasks_1";
+const email1 = "space_tasks_1@space_tasks_1.com";
+const password1 = "space_tasks_1";
+const spacename1 = "space_tasks_1";
+const color1 = "space_tasks_1";
+const taskname1 = "space_tasks_1";
+const taskname1updated = "space_tasks_1_updated";
 const points1 = 1;
 const points1updated = 11;
 
 let jwt2, userId2, taskId2, spaceId2;
-const username2 = "user2";
-const email2 = "email2";
-const password2 = "pass2";
-const password2updated = "pass2updated";
-const spacename2 = "space2";
-const spacename2updated = "space2updated";
-const color2 = "0x00FF00";
-const color2updated = "0x00FFFF";
-const taskname2 = "task2";
-const taskname2updated = "task2updated";
+const username2 = "space_tasks_2";
+const email2 = "space_tasks_2@space_tasks_2.com";
+const password2 = "space_tasks_2";
+const spacename2 = "space_tasks_2";
+const color2 = "space_tasks_2";
+const taskname2 = "space_tasks_2";
+const taskname2updated = "space_tasks_2_updated";
 const points2 = 2;
 const points2updated = 22;
 
 const inventedMongoDbObjectId = "000000000000000000000000";
-const wrongMongoDbObjectId = "0";
 
-// Register userId1 & userId2 & userId3
+// Register userId1 & userId2 
 beforeAll(async () => {
 
   let res;
@@ -172,7 +165,7 @@ afterAll(async () => {
   expect(res.status).toEqual(204);
 });
 
-// Get sure spaces are empty before each test
+// Get sure space tasks are empty before each test
 beforeEach(async() => {
     
   let res; 
@@ -200,7 +193,7 @@ beforeEach(async() => {
   }
 });
 
-describe('Spaces task CRUD', function() {
+describe('Spaces task CRUD (GC)', function() {
 
   it ('GC: Get/Create/Delete task - 2 spaces with 0 task', async function () {
 
@@ -318,7 +311,7 @@ describe('Spaces task CRUD', function() {
     }
   });
 
-  it ('GC: Get/Create task - 1 space with 2 tasks', async function () {
+  it ('GC: Get/Create/Delete task - 1 space with 2 tasks', async function () {
     
     let res;
 
@@ -435,229 +428,6 @@ describe('Spaces task CRUD', function() {
     }
   });
 
-  it ('BC: Get task - spaceId does not exists', async function () {
-
-    let res;
-
-    // Check tasks of invented space
-    {
-      res = await request(baseURL)
-                    .get(`/spaces/${inventedMongoDbObjectId}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send();
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-      expect(res.body.tasks).not.toBeDefined();
-    }
-  });
- 
-  it ('BC: Get task - user does not exist', async function () {
-    
-    let res;
-    
-    // Check tasks of spaceId1 with by jwt2
-    {
-      res = await request(baseURL)
-                    .get(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt2}`)
-                    .send();
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-      expect(res.body.tasks).not.toBeDefined();
-    }
-  });
-
-  it ('BC: Create task - spaceId does not exists', async function () {
-    let res;
-
-    // Create task1 in invented spaceId by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${inventedMongoDbObjectId}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: taskname1,
-                      points: points1
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-  });
-
-  it ('BC: Create task - user does not exist', async function () {
-
-    let res;
-
-    // Create task2 in spaceId1 by user2
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt2}`)
-                    .send({
-                      taskname: taskname2,
-                      points: points2
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-  });
-
-  it ('BC: Create task - taskname not provided', async function () {
-    
-    let res;
-    
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      points: points1
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-  });
-
-  it ('BC: Create task - points not provided', async function () {
-    
-    let res;
-
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: taskname1
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-  });
-
-  it ('BC: Create task - invalid taskname value', async function () {
-
-    let res;
-    
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: "  ",
-                      points: points1
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-  });
-  
-  it ('BC: Create task - invalid points values', async function () {
-
-    let res;
-    
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: spacename1,
-                      points: 1.1
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: spacename1,
-                      points: -10
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: spacename1,
-                      points: "10"
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-  });
-
-  it ('BC: Create task - task already exist', async function () {
-    
-    let res;
-
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: taskname1,
-                      points: points1
-                    });
-      expect(res.status).toEqual(200);
-      expect(res.body.status).toEqual('success');
-      expect(res.body.task.taskname).toEqual(taskname1);
-      expect(res.body.task.points).toEqual(points1);
-    }
-
-    // Create task1 in spaceId1 by user1
-    {
-      res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskname: taskname1,
-                      points: points1
-                    });
-      expect(res.status).toEqual(400);
-      expect(res.body.status).toEqual('fail');
-    }
-  
-    // Check tasks of spaceId1
-    {
-      res = await request(baseURL)
-                    .get(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send();
-      expect(res.status).toEqual(200);
-      expect(res.body.status).toEqual('success');
-      expect(res.body.tasks.length).toEqual(1);
-      expect(res.body.tasks[0].taskname).toEqual(taskname1);
-      expect(res.body.tasks[0].points).toEqual(points1);
-      expect(res.body.tasks[0]._id).toBeDefined();
-      taskId1 = res.body.tasks[0]._id;
-    }
-
-    // Delete taskId1 from spaceId1
-    {
-      res = await request(baseURL)
-                    .delete(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
-                    .send({
-                      taskId: taskId1 
-                    });
-      expect(res.status).toEqual(200);
-      expect(res.body.status).toEqual('success');
-    }
-  });
-  
   it ('GC: Update task - 1 space with 1 task gets updated', async function () {
 
     let res;
@@ -1028,6 +798,238 @@ describe('Spaces task CRUD', function() {
     }
   });
 
+});
+
+describe('Spaces get task (BC)', function() {
+  it ('BC: Get task - spaceId does not exists', async function () {
+
+    let res;
+
+    // Check tasks of invented space
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${inventedMongoDbObjectId}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send();
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+      expect(res.body.tasks).not.toBeDefined();
+    }
+  });
+ 
+  it ('BC: Get task - user does not exist', async function () {
+    
+    let res;
+    
+    // Check tasks of spaceId1 with by jwt2
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt2}`)
+                    .send();
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+      expect(res.body.tasks).not.toBeDefined();
+    }
+  });
+});
+
+describe('Spaces create task (BC)', function() {
+
+  it ('BC: Create task - spaceId does not exists', async function () {
+    let res;
+
+    // Create task1 in invented spaceId by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${inventedMongoDbObjectId}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: taskname1,
+                      points: points1
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+  });
+
+  it ('BC: Create task - user does not exist', async function () {
+
+    let res;
+
+    // Create task2 in spaceId1 by user2
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt2}`)
+                    .send({
+                      taskname: taskname2,
+                      points: points2
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+  });
+
+  it ('BC: Create task - taskname not provided', async function () {
+    
+    let res;
+    
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      points: points1
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+  });
+
+  it ('BC: Create task - points not provided', async function () {
+    
+    let res;
+
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: taskname1
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+  });
+
+  it ('BC: Create task - invalid taskname value', async function () {
+
+    let res;
+    
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: "  ",
+                      points: points1
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+  });
+  
+  it ('BC: Create task - invalid points values', async function () {
+
+    let res;
+    
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: spacename1,
+                      points: 1.1
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: spacename1,
+                      points: -10
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: spacename1,
+                      points: "10"
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+  });
+
+  it ('BC: Create task - task already exist', async function () {
+    
+    let res;
+
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: taskname1,
+                      points: points1
+                    });
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.task.taskname).toEqual(taskname1);
+      expect(res.body.task.points).toEqual(points1);
+    }
+
+    // Create task1 in spaceId1 by user1
+    {
+      res = await request(baseURL)
+                    .post(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskname: taskname1,
+                      points: points1
+                    });
+      expect(res.status).toEqual(400);
+      expect(res.body.status).toEqual('fail');
+    }
+  
+    // Check tasks of spaceId1
+    {
+      res = await request(baseURL)
+                    .get(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send();
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.tasks.length).toEqual(1);
+      expect(res.body.tasks[0].taskname).toEqual(taskname1);
+      expect(res.body.tasks[0].points).toEqual(points1);
+      expect(res.body.tasks[0]._id).toBeDefined();
+      taskId1 = res.body.tasks[0]._id;
+    }
+
+    // Delete taskId1 from spaceId1
+    {
+      res = await request(baseURL)
+                    .delete(`/spaces/${spaceId1}/tasks`)
+                    .set('Authorization', `Bearer ${jwt1}`)
+                    .send({
+                      taskId: taskId1 
+                    });
+      expect(res.status).toEqual(200);
+      expect(res.body.status).toEqual('success');
+    }
+  });
+});
+
+describe('Spaces update task (BC)', function() {
+
   it ('BC: Update task - spaceId does not exists', async function () {
 
     let res;
@@ -1338,7 +1340,10 @@ describe('Spaces task CRUD', function() {
       expect(res.body.status).toEqual('success');
     }
   });
-  
+});
+
+describe('Spaces delete task (BC)', function() {
+
   it ('BC: Delete task - spaceId does not exists', async function () {
 
     let res;
@@ -1356,7 +1361,6 @@ describe('Spaces task CRUD', function() {
       expect(res.body.status).toEqual('fail');
     }    
   });
-
 
   it ('BC: Delete task - taskId not provided', async function () {
     let res;
