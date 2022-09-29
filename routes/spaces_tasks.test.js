@@ -311,14 +311,14 @@ describe('Spaces task CRUD (GC)', function() {
     }
   });
 
-  it ('GC: Get/Create/Delete task - 1 space with 2 tasks', async function () {
+  it ('GC: Get/Create/Delete task - 1 space with 2 tasks (different roles)', async function () {
     
     let res;
 
-    // Create task1 in spaceId1 by user1
+    // Create task1 in spaceId2 by user1
     {
       res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
+                    .post(`/spaces/${spaceId2}/tasks`)
                     .set('Authorization', `Bearer ${jwt1}`)
                     .send({
                       taskname: taskname1,
@@ -333,7 +333,7 @@ describe('Spaces task CRUD (GC)', function() {
     // Check tasks of spaceId1
     {
       res = await request(baseURL)
-                    .get(`/spaces/${spaceId1}/tasks`)
+                    .get(`/spaces/${spaceId2}/tasks`)
                     .set('Authorization', `Bearer ${jwt1}`)
                     .send();
       expect(res.status).toEqual(200);
@@ -345,11 +345,11 @@ describe('Spaces task CRUD (GC)', function() {
       taskId1 = res.body.tasks[0]._id;
     }
 
-    // Create task2 in spaceId1 by user1
+    // Create task2 in spaceId2 by user2
     {
       res = await request(baseURL)
-                    .post(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
+                    .post(`/spaces/${spaceId2}/tasks`)
+                    .set('Authorization', `Bearer ${jwt2}`)
                     .send({
                       taskname: taskname2,
                       points: points2
@@ -360,10 +360,10 @@ describe('Spaces task CRUD (GC)', function() {
       expect(res.body.task.points).toEqual(points2);
     }
   
-    // Check tasks of spaceId1
+    // Check tasks of spaceId2
     {
       res = await request(baseURL)
-                    .get(`/spaces/${spaceId1}/tasks`)
+                    .get(`/spaces/${spaceId2}/tasks`)
                     .set('Authorization', `Bearer ${jwt1}`)
                     .send();
       expect(res.status).toEqual(200);
@@ -381,19 +381,19 @@ describe('Spaces task CRUD (GC)', function() {
     // Delete taskId1 from spaceId1
     {
       res = await request(baseURL)
-                    .delete(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
+                    .delete(`/spaces/${spaceId2}/tasks`)
+                    .set('Authorization', `Bearer ${jwt2}`)
                     .send({
                       taskId: taskId1 
                     });
       expect(res.status).toEqual(200);
       expect(res.body.status).toEqual('success');
     }
-    
-    // Check tasks of spaceId1
+  
+    // Check tasks of spaceId1 by user1
     {
       res = await request(baseURL)
-                    .get(`/spaces/${spaceId1}/tasks`)
+                    .get(`/spaces/${spaceId2}/tasks`)
                     .set('Authorization', `Bearer ${jwt1}`)
                     .send();
       expect(res.status).toEqual(200);
@@ -404,11 +404,11 @@ describe('Spaces task CRUD (GC)', function() {
       expect(res.body.tasks[0]._id).toEqual(taskId2);
     }
 
-    // Delete taskId1 from spaceId1
+    // Delete taskId1 from spaceId1 by user2
     {
       res = await request(baseURL)
-                    .delete(`/spaces/${spaceId1}/tasks`)
-                    .set('Authorization', `Bearer ${jwt1}`)
+                    .delete(`/spaces/${spaceId2}/tasks`)
+                    .set('Authorization', `Bearer ${jwt2}`)
                     .send({
                       taskId: taskId2 
                     });
@@ -419,7 +419,7 @@ describe('Spaces task CRUD (GC)', function() {
     // Check tasks of spaceId1
     {
       res = await request(baseURL)
-                    .get(`/spaces/${spaceId1}/tasks`)
+                    .get(`/spaces/${spaceId2}/tasks`)
                     .set('Authorization', `Bearer ${jwt1}`)
                     .send();
       expect(res.status).toEqual(200);
