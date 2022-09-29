@@ -2,18 +2,18 @@ const request = require('supertest')
 const baseURL = "http://localhost:8080";
 
 let jwt1, userId1;
-const username1 = "users_test_1";
-const email1 = "users_test_1@users_test_1.com";
-const password1 = "users_test_1";
-const spacename1 = "users_test_1";
-const color1 = "users_test_1";
+const username1 = "users_1";
+const email1 = "users_1@users_1.com";
+const password1 = "users_1";
+const spacename1 = "users_1";
+const color1 = "users_1";
 
 let jwt2, userId2;
-const username2 = "users_test_2";
-const email2 = "users_test_2@users_test_2.com";
-const password2 = "users_test_2";
-const spacename2 = "users_test_2";
-const color2 = "users_test_2";
+const username2 = "users_2";
+const email2 = "users_2@users_2.com";
+const password2 = "users_2";
+const spacename2 = "users_2";
+const color2 = "users_2";
 
 // Register users test1 & test2
 beforeAll(async () => {
