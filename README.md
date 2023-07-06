@@ -1,2 +1,3 @@
-# churripuntos
+# churripuntos by Marsal & Machado
+
 churripuntos
