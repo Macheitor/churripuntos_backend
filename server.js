@@ -28,6 +28,7 @@ app.use('/login', require('./routes/login'));
 app.use(authJWT);
 app.use('/spaces', require('./routes/spaces'));
 app.use('/users', require('./routes/users'));
+app.use('/verifySession', require('./routes/verifySession'))
 
 // routes fallback
 app.all('*', (req, res) =>res.status(404).send({ status: 'fail', code:'404', message: 'PAGE NOT FOUND'}));
