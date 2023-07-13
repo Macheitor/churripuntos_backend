@@ -2,6 +2,40 @@ const Spaces = require('mongoose').model("Spaces")
 const Users = require('mongoose').model("Users")
 const {errLogger} = require('../middlewares/logger');
 
+async function getSpace (req, res) {
+    try {
+
+        // Search the space
+        const space = await Spaces.findOne({_id: req.params.spaceId});
+        
+        if (!space) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `space not found.`
+            });
+        }
+
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === req._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${req.username} is not in this space.`
+            });
+        }
+
+        // Return the space
+        res.status(200).send({
+            status: "success",
+            space
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
 
 async function deleteSpace (req, res) {
     try {
@@ -897,7 +931,8 @@ async function deleteActivity (req, res) {
     }
 }
 
-module.exports = {  
+module.exports = {
+    getSpace,
     deleteSpace,
     getSpaceUsers,
     joinSpace,
