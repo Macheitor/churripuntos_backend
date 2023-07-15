@@ -607,15 +607,12 @@ async function createTask (req, res) {
 async function deleteTask (req, res) {
     try {
         const spaceId = req.params.spaceId;
+        const taskId = req.params.taskId
 
         const user = {
             username: req.username,
             _id: req._id
         };
-
-        const task = {
-            taskId: req.body.taskId
-        }
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, tasks: 1});
@@ -637,18 +634,18 @@ async function deleteTask (req, res) {
 
         // Remove task
         const taskDeleted = await Spaces.findOneAndUpdate(
-            {_id: spaceId, "tasks._id": task.taskId},
-            {$pull: {tasks: {_id: task.taskId}}});
+            {_id: spaceId, "tasks._id": taskId},
+            {$pull: {tasks: {_id: taskId}}});
 
         if (taskDeleted) {
             res.status(200).send({
                 status: "success",
-                message: `task ${task.taskId} deleted.`
+                message: `task ${taskId} deleted.`
             });
         } else {
             res.status(400).send({
                 status: "fail",
-                message: `task ${task.taskId} does not exist.`
+                message: `task ${taskId} does not exist.`
             });
         }
 

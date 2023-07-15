@@ -24,7 +24,9 @@ router.route('/:spaceId/admins')
 router.route('/:spaceId/tasks')
     .get(spacesController.getTasks)
     .post(spacesController.createTask)
-    .put(spacesController.updateTask)
+    .put(spacesController.updateTask);
+
+router.route('/:spaceId/tasks/:taskId')
     .delete(spacesController.deleteTask);
 
 // Activities CRUD
