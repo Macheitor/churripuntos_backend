@@ -873,9 +873,7 @@ async function deleteActivity (req, res) {
             _id: req._id
         };
 
-        const activityId = req.body.activityId;
-        
-        if (!activityId) return res.status(400).send({status: 'fail', message: 'activityId not provided'});
+        const activityId = req.params.activityId;
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, activities: 1});

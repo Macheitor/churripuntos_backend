@@ -32,7 +32,9 @@ router.route('/:spaceId/tasks/:taskId')
 // Activities CRUD
 router.route('/:spaceId/activities')
     .get(spacesController.getActivities)
-    .post(spacesController.createActivity)
+    .post(spacesController.createActivity);
+
+router.route('/:spaceId/activities/:activityId')
     .delete(spacesController.deleteActivity);
 
 module.exports = router;
