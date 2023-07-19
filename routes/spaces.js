@@ -6,6 +6,7 @@ const spacesController = require('../controller/spacesController');
 // Space CRUD
 router.route( '/:spaceId')
     .get(spacesController.getSpace)
+    .put(spacesController.updateSpacename)
     .delete(spacesController.deleteSpace);
 
 // Users CRUD

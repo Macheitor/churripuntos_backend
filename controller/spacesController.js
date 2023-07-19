@@ -90,6 +90,44 @@ async function deleteSpace (req, res) {
     }
 }
 
+async function updateSpacename (req, res) {
+    try {
+
+        // Search the space
+        const spaceId = req.params.spaceId;
+        const space = await Spaces.findOne({_id: spaceId});
+        
+        const newSpacename = req.body.newSpacename;
+
+        if (!newSpacename) return res.status(400).send({status: 'fail', message: 'spacename not provided'});
+        if (!space) return res.status(400).send({status: `fail`, message: `space not found.`});
+        if (newSpacename === space.spacename) return res.status(400).send({status: `fail`, message: `The new space name must be different`});
+        
+        
+        // Check if user exists
+        const userExists = space.users.find(u => u._id.toString() === req._id);
+        if (!userExists) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user ${req.username} is not in this space.`
+            });
+        }
+
+        await Spaces.findOneAndUpdate(
+            {_id: spaceId},
+            { $set: {"spacename": newSpacename}});
+        
+        res.status(200).send({
+            status: "success",
+            message: `Spacename changed to: ${newSpacename}`
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
 
 async function getSpaceUsers (req, res) {
     try {
@@ -929,6 +967,7 @@ async function deleteActivity (req, res) {
 module.exports = {
     getSpace,
     deleteSpace,
+    updateSpacename,
     getSpaceUsers,
     joinSpace,
     leaveSpace,
