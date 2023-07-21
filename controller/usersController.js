@@ -10,10 +10,7 @@ async function getUsers (req, res) {
         const search = req.body.search || "";
 
         // Get db usernames
-        let users = await Users.find({username: new RegExp('^' + search)}, {_id: 0, username: 1});
-
-        // Convert array of objects into array of string
-        users = users.map(e => e.username)
+        let users = await Users.find({username: new RegExp('^' + search)}, {_id: 1, username: 1});
 
         // Return the users of the db
         res.status(200).send({
