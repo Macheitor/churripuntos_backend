@@ -2,6 +2,51 @@ const Spaces = require('mongoose').model("Spaces")
 const Users = require('mongoose').model("Users")
 const {errLogger} = require('../middlewares/logger');
 
+
+async function createSpace (req, res) {
+
+    try {
+
+        // Check the parameters from body
+        if (!req.body.spacename)  return res.status(400).send({status: 'fail', message: 'spacename not provided'});
+        // if (!req.body.color)  return res.status(400).send({status: 'fail', message: 'color not provided'});
+        
+        // Take parameters from body
+        const spacename = req.body.spacename.replace(/^\s+|\s+$/g, "");
+        // const color = req.body.color;
+
+        // Check if it is a valid taskname
+        if (spacename === '') {
+            return res.status(400).send({
+                status: `fail`,
+                message: `Invalid spacename.`
+            });
+        }
+
+        // Build user object
+        const user = {
+            isAdmin: true,
+            username: req.username,
+            _id: req._id,
+            //color
+        };
+
+        // Create the space
+        const spaceCreated = await Spaces.create({spacename, users: user});
+
+        // Return the space created
+        res.status(200).send({
+            status: "success",
+            space: { spacename, spaceId: spaceCreated._id}
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+
 async function getSpace (req, res) {
     try {
 
@@ -965,6 +1010,7 @@ async function deleteActivity (req, res) {
 }
 
 module.exports = {
+    createSpace,
     getSpace,
     deleteSpace,
     updateSpacename,

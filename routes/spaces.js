@@ -4,6 +4,10 @@ const router = express.Router();
 const spacesController = require('../controller/spacesController');
 
 // Space CRUD
+router.route('/')
+    .post(spacesController.createSpace)
+
+// Space CRUD
 router.route( '/:spaceId')
     .get(spacesController.getSpace)
     .put(spacesController.updateSpacename)
