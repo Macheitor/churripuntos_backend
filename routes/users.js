@@ -8,6 +8,6 @@ router.route('/')
 
 router.route('/:userId')
     .get(usersController.getSpaces)
-    .delete(usersController.deleteUser)
+    // .delete(usersController.deleteUser)
 
 module.exports = router;
