@@ -10,7 +10,7 @@ async function createSpace (req, res) {
         // Check the parameters from body
         if (!req.body.spacename)  return res.status(400).send({status: 'fail', message: 'spacename not provided'});
         // if (!req.body.color)  return res.status(400).send({status: 'fail', message: 'color not provided'});
-        
+
         // Take parameters from body
         const spacename = req.body.spacename.replace(/^\s+|\s+$/g, "");
         // const color = req.body.color;
@@ -41,7 +41,7 @@ async function createSpace (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -52,7 +52,7 @@ async function getSpace (req, res) {
 
         // Search the space
         const space = await Spaces.findOne({_id: req.params.spaceId});
-        
+
         if (!space) {
             return res.status(400).send({
                 status: `fail`,
@@ -76,7 +76,7 @@ async function getSpace (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -127,9 +127,9 @@ async function deleteSpace (req, res) {
                 spaceId
             }
         });
-      
+
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -141,14 +141,14 @@ async function updateSpacename (req, res) {
         // Search the space
         const spaceId = req.params.spaceId;
         const space = await Spaces.findOne({_id: spaceId});
-        
+
         const newSpacename = req.body.newSpacename;
 
         if (!newSpacename) return res.status(400).send({status: 'fail', message: 'spacename not provided'});
         if (!space) return res.status(400).send({status: `fail`, message: `space not found.`});
         if (newSpacename === space.spacename) return res.status(400).send({status: `fail`, message: `The new space name must be different`});
-        
-        
+
+
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === req._id);
         if (!userExists) {
@@ -161,14 +161,14 @@ async function updateSpacename (req, res) {
         await Spaces.findOneAndUpdate(
             {_id: spaceId},
             { $set: {"spacename": newSpacename}});
-        
+
         res.status(200).send({
             status: "success",
             message: `Spacename changed to: ${newSpacename}`
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -207,7 +207,7 @@ async function getSpaceUsers (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -277,21 +277,21 @@ async function joinSpace (req, res) {
         }
 
         await Spaces.findOneAndUpdate(
-            {_id: spaceId}, 
+            {_id: spaceId},
             {$push: {users: userJoining}});
-        
+
         res.status(200).send({
             status: "success",
             message: `user ${userJoining.username} joined this space.`
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
 }
-    
+
 async function leaveSpace (req, res) {
     try {
         const spaceId = req.params.spaceId;
@@ -302,12 +302,10 @@ async function leaveSpace (req, res) {
         };
 
         const userLeaving = {
-            username: req.body.username,
-            _id: req.body._id
+            _id: req.params.userId
         };
 
         // Check given JSON parameters
-        if (!userLeaving.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
         if (!userLeaving._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
 
         // Check if space exists.
@@ -362,11 +360,11 @@ async function leaveSpace (req, res) {
 
         res.status(200).send({
             status: "success",
-            message: `user ${userLeaving.username} left this space`
+            message: `user ${userLeaving._id} left this space`
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -407,7 +405,7 @@ async function getSpaceAdmins (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -485,7 +483,7 @@ async function createAdmin (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -564,7 +562,7 @@ async function deleteAdmin (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -604,7 +602,7 @@ async function getTasks (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -622,13 +620,13 @@ async function createTask (req, res) {
         // Check given parameters
         if (!req.body.taskname) return res.status(400).send({status: 'fail', message: 'taskname not provided'});
         if (!req.body.points) return res.status(400).send({status: 'fail', message: 'task points not provided'});
-        
+
         // Remove start and end spaces
         const task = {
             taskname: req.body.taskname.replace(/^\s+|\s+$/g, ""),
             points: req.body.points
         }
-        
+
         // Check if it is a valid taskname
         if (task.taskname === '') {
             return res.status(400).send({
@@ -672,7 +670,7 @@ async function createTask (req, res) {
         }
 
         await Spaces.findOneAndUpdate(
-            {_id: spaceId}, 
+            {_id: spaceId},
             {$push: {tasks: task}});
 
         res.status(200).send({
@@ -681,7 +679,7 @@ async function createTask (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -733,7 +731,7 @@ async function deleteTask (req, res) {
         }
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -744,7 +742,7 @@ async function updateTask (req, res) {
         if (!req.body.taskname) return res.status(400).send({status: 'fail', message: 'taskname not provided'});
         if (!req.body.points) return res.status(400).send({status: 'fail', message: 'task points not provided'});
         if (!req.body.taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
-        
+
         const spaceId = req.params.spaceId;
 
         const user = {
@@ -757,7 +755,7 @@ async function updateTask (req, res) {
             taskname: req.body.taskname.replace(/^\s+|\s+$/g, ""),
             points: req.body.points
         }
-  
+
         // Check if it is a valid taskname
         if (task.taskname === '') {
             return res.status(400).send({
@@ -804,7 +802,7 @@ async function updateTask (req, res) {
         const taskUpdated = await Spaces.findOneAndUpdate(
             {_id: spaceId, "tasks": { "$elemMatch": { "_id": task.taskId }}},
             { $set: {"tasks.$.taskname": task.taskname, "tasks.$.points": task.points, "tasks.$._id": task.taskId}});
-        
+
         // Check if a task was updated
         if (taskUpdated) {
             res.status(200).send({
@@ -820,7 +818,7 @@ async function updateTask (req, res) {
         }
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -829,12 +827,12 @@ async function updateTask (req, res) {
 async function getActivities (req, res) {
     try {
         const spaceId = req.params.spaceId;
-        
+
         const user = {
             username: req.username,
             _id: req._id
         };
-        
+
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, activities: 1});
         if (!space) {
@@ -852,7 +850,7 @@ async function getActivities (req, res) {
                 message: `user ${user.username} is not in this space.`
             });
         }
-        
+
         // Get activities
         res.status(200).send({
             status: `success`,
@@ -860,12 +858,12 @@ async function getActivities (req, res) {
         });
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
 }
-    
+
 async function createActivity (req, res) {
     try {
         const spaceId = req.params.spaceId;
@@ -877,7 +875,7 @@ async function createActivity (req, res) {
 
         const taskId = req.body.taskId;
         const userActivityId = req.body.userId;
-        
+
         // Check given parameters
         if (!taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
         if (!userActivityId) return res.status(400).send({status: 'fail', message: 'userId not provided'});
@@ -940,7 +938,7 @@ async function createActivity (req, res) {
 
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
@@ -1003,7 +1001,7 @@ async function deleteActivity (req, res) {
         }
 
     } catch(err) {
-        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        const error = { status: 'error', message: `${err.name}: ${err.message}` };
         res.status(500).send(error);
         errLogger(error.message);
     }
