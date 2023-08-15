@@ -19,26 +19,28 @@ const authJWT = async (req, res, next) => {
 }
 
 const authentication = async (req, res, next) => {
+
+    const errorMsg = "wrong email or password";
     
     const bcrypt = require('bcrypt');
     const Users = require('mongoose').model("Users")
 
-    const username = req.body.username;
     const email = req.body.email;
-    const password = req.body.password;
+    const password = req.body.password;    
+    const username = req.body.username;
 
-    if (!username && !email) return res.status(400).send({ status: "fail", message: `username nor email provided`});
-    if (!password) return res.status(400).send({ status: "fail", message: `password not provided`});
+    if (!username && !email) return res.status(400).send({ status: "fail", message: errorMsg});
+    if (!password) return res.status(400).send({ status: "fail", message: errorMsg});
 
     // Check if user exists
     const userExists = await Users.findOne({$or: [{username}, {email}]});
-    if(!userExists) return res.status(400).send({ status: "fail", message: `wrong username or email`});
+    if(!userExists) return res.status(400).send({ status: "fail", message: errorMsg});
 
     // Check if the password is right
-    if ( ! await bcrypt.compare(password, userExists.password)) {
+    if (!await bcrypt.compare(password, userExists.password)) {
         return res.status(400).send({
             status: 'fail',
-            message: "Wrong password"
+            message: errorMsg
         })
     }
 
