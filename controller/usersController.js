@@ -26,13 +26,13 @@ async function getUsers (req, res) {
 }
 
 
-async function getSpaces (req, res) {
+async function getUserSpaces (req, res) {
     try {
         // Check if userId URL parameter matches the userId inside the jwt
         if (req.params.userId !== req._id)  return res.status(400).send({status: 'fail', message: 'user not authorized'});
 
         // Search the spaces this user is in
-        const spaces = await Spaces.find({users: {$elemMatch: {_id: req._id}}});
+        const spaces = await Spaces.find({users: {$elemMatch: {_id: req._id}}}, {_id: 1, spacename: 1});
 
         // Return the spaces of the user
         res.status(200).send({
@@ -82,6 +82,6 @@ async function deleteUser(req, res) {
 
 module.exports = {
     getUsers,
-    getSpaces,
+    getUserSpaces,
     deleteUser
 };

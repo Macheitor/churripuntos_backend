@@ -7,7 +7,7 @@ router.route('/')
     .get(usersController.getUsers);
 
 router.route('/:userId')
-    .get(usersController.getSpaces)
+    .get(usersController.getUserSpaces)
     // .delete(usersController.deleteUser)
 
 module.exports = router;
