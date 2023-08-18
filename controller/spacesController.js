@@ -45,7 +45,7 @@ async function createSpace (req, res) {
         // Return the space created
         res.status(200).send({
             status: "success",
-            space: { spacename, spaceId: spaceCreated._id}
+            space: { spacename, _id: spaceCreated._id}
         });
 
     } catch(err) {
@@ -677,13 +677,15 @@ async function createTask (req, res) {
             });
         }
 
-        await Spaces.findOneAndUpdate(
+        const spaceUpdated = await Spaces.findOneAndUpdate(
             {_id: spaceId},
-            {$push: {tasks: task}});
+            {$push: {tasks: task}}, {returnDocument: "after"});
+
+        const taskCreated = spaceUpdated.tasks.find(({taskname}) => taskname === task.taskname)
 
         res.status(200).send({
             status: "success",
-            task
+            task: taskCreated
         });
 
     } catch(err) {
