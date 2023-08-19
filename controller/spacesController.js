@@ -287,10 +287,10 @@ async function joinSpace (req, res) {
         await Spaces.findOneAndUpdate(
             {_id: spaceId},
             {$push: {users: userJoining}});
-
+    
         res.status(200).send({
             status: "success",
-            message: `user ${userJoining.username} joined this space.`
+            user: userJoining
         });
 
     } catch(err) {
