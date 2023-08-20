@@ -883,12 +883,17 @@ async function createActivity (req, res) {
             _id: req._id
         };
 
-        const taskId = req.body.taskId;
-        const userActivityId = req.body.userId;
+        const task = req.body.task
+        const taskUser = req.body.user
+        
+        // const taskId = req.body.taskId;
+        // const userActivityId = req.body.userId;
 
         // Check given parameters
-        if (!taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
-        if (!userActivityId) return res.status(400).send({status: 'fail', message: 'userId not provided'});
+        if (!task) return res.status(400).send({status: 'fail', message: 'task not provided'});
+        if (!taskUser) return res.status(400).send({status: 'fail', message: 'user not provided'});
+        // if (!taskId) return res.status(400).send({status: 'fail', message: 'taskId not provided'});
+        // if (!userActivityId) return res.status(400).send({status: 'fail', message: 'userId not provided'});
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1, tasks: 1});
@@ -909,7 +914,7 @@ async function createActivity (req, res) {
         }
 
         // Check if userActivity exists
-        const userActivityExists = space.users.find(u => u._id.toString() === userActivityId);
+        const userActivityExists = space.users.find(u => u._id.toString() === taskUser._id);
         if (!userActivityExists) {
             return res.status(400).send({
                 status: `fail`,
@@ -918,7 +923,7 @@ async function createActivity (req, res) {
         }
 
         // Check if task exist
-        const taskExists = space.tasks.find(t => t._id.toString() === taskId);
+        const taskExists = space.tasks.find(t => t._id.toString() === task._id);
 
         if (!taskExists) {
             return res.status(400).send({
@@ -928,12 +933,11 @@ async function createActivity (req, res) {
         }
 
         const activity = {
-            username: userActivityExists.username,
-            userId: userActivityExists._id,
-            color: userActivityExists.color,
-            taskId: taskExists._id,
-            taskname: taskExists.taskname,
-            points: taskExists.points,
+            username: taskUser.username,
+            userId: taskUser._id,
+            taskId: task._id,
+            taskname: task.taskname,
+            points: task.points,
             date: new Date()
         }
 
