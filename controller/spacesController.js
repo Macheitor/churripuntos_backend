@@ -6,7 +6,6 @@ const {errLogger} = require('../middlewares/logger');
 async function createSpace (req, res) {
 
     try {
-
         // Check the parameters from body
         if (!req.body.spacename)  return res.status(400).send({status: 'fail', message: 'spacename not provided'});
 
@@ -27,14 +26,6 @@ async function createSpace (req, res) {
             username: req.username,
             _id: req._id,
         };
-
-        
-        // Search if this space is already created
-        const spaceExists = await Spaces.findOne({spacename});
-
-        if (spaceExists) {
-            return res.status(400).send({ status: "fail", message: `spacename already created`});
-        }
 
         // Create the space
         const spaceCreated = await Spaces.create({spacename, users: user});
