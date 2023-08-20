@@ -348,7 +348,7 @@ async function leaveSpace (req, res) {
         if ((admins.length === 1) && (admins[0]._id.toString() === userLeaving._id)) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userIsAdmin.username} is last admin. Asing another admin.`
+                message: `user ${userLeavingExists.username} is last admin. Asing another admin.`
             });
         }
 
@@ -547,7 +547,7 @@ async function deleteAdmin (req, res) {
         if (!userToDownIsAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToAdmin.username} is not in this space.`
+                message: `user ${userToDowngrade.username} is not in this space.`
             });
         }
 
@@ -556,7 +556,7 @@ async function deleteAdmin (req, res) {
         if ((admins.length === 1) && (admins[0]._id.toString() === userToDowngrade._id)) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userIsAdmin.username} is last admin. Asing another admin.`
+                message: `user ${userToDowngrade.username} is last admin. Asing another admin.`
             });
         }
 
