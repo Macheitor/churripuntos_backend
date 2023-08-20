@@ -9,11 +9,9 @@ async function createSpace (req, res) {
 
         // Check the parameters from body
         if (!req.body.spacename)  return res.status(400).send({status: 'fail', message: 'spacename not provided'});
-        // if (!req.body.color)  return res.status(400).send({status: 'fail', message: 'color not provided'});
 
         // Take parameters from body
         const spacename = req.body.spacename.replace(/^\s+|\s+$/g, "");
-        // const color = req.body.color;
 
         // Check if it is a valid taskname
         if (spacename === '') {
@@ -28,7 +26,6 @@ async function createSpace (req, res) {
             isAdmin: true,
             username: req.username,
             _id: req._id,
-            //color
         };
 
         
@@ -233,12 +230,10 @@ async function joinSpace (req, res) {
         const userJoining = {
             username: req.body.username,
             _id: req.body._id,
-            // color: req.body.color
         };
 
         if (!userJoining._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
         if (!userJoining.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
-        // if (!userJoining.color) return res.status(400).send({status: 'fail', message: 'color not provided'});
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});

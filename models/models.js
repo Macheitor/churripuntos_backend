@@ -42,11 +42,7 @@ const initDb = async () => {
             username: {
                 type: String,
                 required: true
-            },
-            // color: {
-            //     type: String,
-            //     required: true
-            // }
+            }
         }],
         tasks: [{
             taskname: {
@@ -67,10 +63,6 @@ const initDb = async () => {
                 type: String,
                 required: true
             },
-            // color: {
-            //     type: String,
-            //     required: true
-            // },
             taskId: {
                 type: String,
                 required: true
