@@ -2,8 +2,28 @@ const Users = require('mongoose').model("Users");
 const Spaces = require('mongoose').model("Spaces");
 const {errLogger} = require('../middlewares/logger');
 
+async function getUser (req, res) {
+    try {
+        // Check if userId URL parameter matches the userId inside the jwt
+        if (req.params.userId !== req._id)  return res.status(400).send({status: 'fail', message: 'user not authorized'});
 
-async function getUsers (req, res) {
+        // Search for the user
+        const user = await Users.findOne({_id: req.params.userId});
+
+        // Return the user
+        res.status(200).send({
+            status: "success",
+            user
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+
+async function getAllUsers (req, res) {
 
     try {
         // Use a search patter if provided
@@ -24,7 +44,6 @@ async function getUsers (req, res) {
         errLogger(error.message);
     }
 }
-
 
 async function getUserSpaces (req, res) {
     try {
@@ -81,7 +100,8 @@ async function deleteUser(req, res) {
 }
 
 module.exports = {
-    getUsers,
+    getUser,
+    getAllUsers,
     getUserSpaces,
     deleteUser
 };
