@@ -218,13 +218,18 @@ async function joinSpace (req, res) {
             _id: req._id
         };
 
-        const userJoining = {
-            username: req.body.username,
-            _id: req.body._id,
-        };
+        const userJoiningEmail = req.body.email;
 
-        if (!userJoining._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
-        if (!userJoining.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
+        if (!userJoiningEmail) return res.status(400).send({status: 'fail', message: 'email not provided'});
+
+        // Check if userJoining exists.
+        const userJoining = await Users.findOne({email: userJoiningEmail });
+        if (!userJoining) {
+            return res.status(400).send({
+                status: `fail`,
+                message: `user not found`
+            });
+        }
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
@@ -258,15 +263,6 @@ async function joinSpace (req, res) {
             return res.status(400).send({
                 status: 'fail',
                 message: `user ${userJoining.username} has already joined this space`
-            });
-        }
-
-        // Check if userJoining exists in our users database
-        const joiningUserExists = await Users.findOne({_id: userJoining._id });
-        if (!joiningUserExists) {
-            return res.status(400).send({
-                status: `fail`,
-                message: `user joining does not exist.`
             });
         }
 
