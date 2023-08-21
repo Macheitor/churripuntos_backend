@@ -20,7 +20,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
 // routes - JWT NO needed
-app.get('/', (req, res) =>res.send('Home page'));
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'));
 
