@@ -12,13 +12,10 @@ async function registerUser(req, res) {
         if (!email) return res.status(400).send({status: 'fail', message: 'email not provided'});
         if (!password) return res.status(400).send({ status: "fail", message: `password not provided`});
 
-        if (/\s/.test(username)) return res.status(400).send({ status: "fail", message: `User name cannot have spaces`});
-
-        const userExists = await Users.findOne({$or: [{username}, {email}]});
+        const userExists = await Users.findOne({email});
 
         if (userExists) {
-            if (userExists.username === username) return res.status(400).send({ status: "fail", message: `username already registered`});
-            else return res.status(400).send({ status: "fail", message: `email already registered`});
+            return res.status(400).send({ status: "fail", message: `email already registered`});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
