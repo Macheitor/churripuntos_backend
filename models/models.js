@@ -39,10 +39,10 @@ const initDb = async () => {
                 type: Boolean,
                 default: false
             },
-            username: {
-                type: String,
-                required: true
-            }
+            isDeleted:{
+                type: Boolean,
+                default: false
+            },
         }],
         tasks: [{
             taskname: {
@@ -55,10 +55,6 @@ const initDb = async () => {
             }
         }],
         activities: [{
-            username: {
-                type: String,
-                required: true
-            },
             userId: {
                 type: String,
                 required: true
