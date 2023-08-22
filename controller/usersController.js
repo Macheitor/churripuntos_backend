@@ -51,7 +51,7 @@ async function getUserSpaces (req, res) {
         if (req.params.userId !== req._id)  return res.status(400).send({status: 'fail', message: 'user not authorized'});
 
         // Search the spaces this user is in
-        const spaces = await Spaces.find({users: {$elemMatch: {_id: req._id}}}, {_id: 1, spacename: 1});
+        const spaces = await Spaces.find({users: {$elemMatch: {_id: req._id, isDeleted:false}}}, {_id: 1, spacename: 1});
 
         // Return the spaces of the user
         res.status(200).send({
