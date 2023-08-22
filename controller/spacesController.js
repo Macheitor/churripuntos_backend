@@ -47,7 +47,7 @@ async function getSpace (req, res) {
     try {
 
         // Search the space
-        const space = await Spaces.findOne({_id: req.params.spaceId});
+        let space = await Spaces.findOne({_id: req.params.spaceId});
 
         if (!space) {
             return res.status(400).send({
@@ -65,7 +65,18 @@ async function getSpace (req, res) {
             });
         }
 
-        // Return the space
+        // Get the space users's ID
+        const spaceUsersId = space.users.map(user => user._id)
+
+        // Get the spaces users's username from DB
+        const users = await Users.find({_id: { $in: spaceUsersId}}, {_id: 1, username: 1})
+
+        space._doc.users = space.users.map(su => {
+            let user = su
+            user._doc.username = users.find(u => u._id.toString() === su._id.toString()).username
+            return user
+        })
+
         res.status(200).send({
             status: "success",
             space
@@ -258,17 +269,25 @@ async function joinSpace (req, res) {
         }
 
         // Check if user already joined the space
-        const alreadyJoined = await Spaces.findOne({_id: spaceId, "users._id": userJoining._id})
-        if (alreadyJoined) {
-            return res.status(400).send({
-                status: 'fail',
-                message: `user ${userJoining.username} has already joined this space`
-            });
-        }
+        const alreadyJoined = space.users.find(user => (user._id.toString() === userJoining._id.toString()))
 
-        await Spaces.findOneAndUpdate(
-            {_id: spaceId},
-            {$push: {users: userJoining}});
+        if (alreadyJoined) {
+            // Check if user was deleted from this space
+            if (alreadyJoined.isDeleted) {
+                await Spaces.findOneAndUpdate(
+                    {_id: spaceId, "users": { "$elemMatch": { "_id": alreadyJoined._id }}},
+                    { $set: {"users.$.isDeleted": false}});
+            } else {   
+                return res.status(400).send({
+                    status: 'fail',
+                    message: `user ${userJoining.username} has already joined this space`
+                });
+            }
+        } else {
+            await Spaces.findOneAndUpdate(
+                {_id: spaceId},
+                {$push: {users: userJoining}});
+        }
     
         res.status(200).send({
             status: "success",
@@ -316,8 +335,8 @@ async function leaveSpace (req, res) {
             });
         }
 
-        // Check if userLeaving exist
-        const userLeavingExists = space.users.find(u => u._id.toString() === userLeaving._id);
+        // Check if userLeaving exist and is not already deleted
+        const userLeavingExists = space.users.find(u => (u._id.toString() === userLeaving._id) && (!u.isDeleted));
         if (!userLeavingExists) {
             return res.status(400).send({
                 status: `fail`,
@@ -343,10 +362,14 @@ async function leaveSpace (req, res) {
         }
 
         // Delete user
-        await Spaces.findOneAndUpdate(
-            {_id: spaceId},
-            {$pull: {users: {_id: userLeaving._id}}});
+        // await Spaces.findOneAndUpdate(
+        //     {_id: spaceId},
+        //     {$pull: {users: {_id: userLeaving._id}}});
 
+        // New delete user
+        await Spaces.findOneAndUpdate(
+            {_id: spaceId, "users": { "$elemMatch": { "_id": userLeaving._id }}},
+            { $set: {"users.$.isDeleted": true}});
 
         res.status(200).send({
             status: "success",
@@ -914,7 +937,8 @@ async function createActivity (req, res) {
             });
         }
 
-        const activity = {
+        // TODO: This should not be a variable. Retrieve the object from DB when pushed
+        let  activity = {
             username: taskUser.username,
             userId: taskUser._id,
             taskId: task._id,
@@ -923,10 +947,13 @@ async function createActivity (req, res) {
             date: new Date()
         }
 
-        await Spaces.findOneAndUpdate (
+        const activityCreated = await Spaces.findOneAndUpdate (
             {_id: spaceId},
             {$push: {activities: activity}});
 
+        activity._id = activityCreated._id
+
+        console.log({activity})
         res.status(200).send({
             status: "success",
             activity
