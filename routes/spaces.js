@@ -23,8 +23,10 @@ router.route( '/:spaceId/users/:userId')
 
 // Admins CRUD
 router.route('/:spaceId/admins')
-    .get(spacesController.getSpaceAdmins)
+    // .get(spacesController.getSpaceAdmins)
     .post(spacesController.createAdmin)
+
+router.route('/:spaceId/admins/:userId')
     .delete(spacesController.deleteAdmin);
 
 // Tasks CRUD

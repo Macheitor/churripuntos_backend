@@ -433,14 +433,7 @@ async function createAdmin (req, res) {
             _id: req._id
         };
 
-        const userToAdmin = {
-            username: req.body.username,
-            _id: req.body._id
-        };
-
-        // Check given JSON parameters
-        if (!userToAdmin._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
-        if (!userToAdmin.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
+        const userToAdminId = req.body.userId
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
@@ -469,19 +462,19 @@ async function createAdmin (req, res) {
         }
 
         // Check if user to make admin exist
-        const userToAdminExists = space.users.find(u => u._id.toString() === userToAdmin._id);
-        if (!userToAdminExists) {
+        const userToAdmin = space.users.find(u => u._id.toString() === userToAdminId);
+        if (!userToAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToAdmin.username} is not in this space.`
+                message: `user to make admin is not in this space.`
             });
         }
 
         // Check if user to make admin is already admin
-        if (userToAdminExists.isAdmin) {
+        if (userToAdmin.isAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToAdmin.username} is already admin in this space.`
+                message: `user to make admin is already admin in this space.`
             });
         }
 
@@ -512,14 +505,7 @@ async function deleteAdmin (req, res) {
             _id: req._id
         };
 
-        const userToDowngrade = {
-            username: req.body.username,
-            _id: req.body._id
-        };
-
-        // Check given parameters
-        if (!userToDowngrade.username) return res.status(400).send({status: 'fail', message: 'username not provided'});
-        if (!userToDowngrade._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
+        const userToDowngradeId = req.params.userId
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
@@ -535,7 +521,7 @@ async function deleteAdmin (req, res) {
         if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `User requesting is not in this space.`
             });
         }
 
@@ -543,35 +529,38 @@ async function deleteAdmin (req, res) {
         if (!userExists.isAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not admin of this space.`
+                message: `User requesting is not admin of this space.`
             });
         }
 
         // Check if user to make admin exist
-        const userToDownIsAdmin = space.users.find(u => u._id.toString() === userToDowngrade._id);
-        if (!userToDownIsAdmin) {
+        const userToDowngrade = space.users.find(u => u._id.toString() === userToDowngradeId);
+        if (!userToDowngrade) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToDowngrade.username} is not in this space.`
+                message: `User to downgrade is is not in this space.`
             });
         }
 
         // Check if is the last admin
         const admins = space.users.filter(u => u.isAdmin);
-        if ((admins.length === 1) && (admins[0]._id.toString() === userToDowngrade._id)) {
+        console.log(admins)
+
+        if (admins.length === 1) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userToDowngrade.username} is last admin. Asing another admin.`
+                message: `User to downgrade is last admin. Asing another admin first.`
             });
         }
 
         await Spaces.findOneAndUpdate(
             {_id: spaceId, "users": { "$elemMatch": { "_id": userToDowngrade._id }}},
-            { $set: {"users.$.isAdmin": false, "users.$._id": userToDowngrade._id}});
+            { $set: {"users.$.isAdmin": false}});
+
 
         res.status(200).send({
             status: "success",
-            message: `user ${userToDowngrade.username} removed from admin.`
+            message: `user removed from admin.`
         });
 
     } catch(err) {
