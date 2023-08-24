@@ -369,7 +369,7 @@ async function leaveSpace (req, res) {
         // New delete user
         await Spaces.findOneAndUpdate(
             {_id: spaceId, "users": { "$elemMatch": { "_id": userLeaving._id }}},
-            { $set: {"users.$.isDeleted": true}});
+            { $set: {"users.$.isDeleted": true, "users.$.isAdmin": false}});
 
         res.status(200).send({
             status: "success",
