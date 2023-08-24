@@ -99,9 +99,36 @@ async function deleteUser(req, res) {
     }
 }
 
+async function updateUsername (req, res) {
+    try {
+        const userId = req.params.userId
+        const newUsername = req.body.newUsername;
+
+        if (!newUsername) return res.status(400).send({status: 'fail', message: 'new username not provided'});
+
+        // Check if userId URL parameter matches the userId inside the jwt
+        if (userId !== req._id)  return res.status(400).send({status: 'fail', message: 'user not authorized'});
+
+        await Users.findOneAndUpdate(
+            {_id: userId},
+            { $set: {"username": newUsername}});
+
+        res.status(200).send({
+            status: "success",
+            newUsername
+        });
+
+    } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+
 module.exports = {
     getUser,
     getAllUsers,
     getUserSpaces,
-    deleteUser
+    deleteUser,
+    updateUsername
 };
