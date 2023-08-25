@@ -926,8 +926,7 @@ async function createActivity (req, res) {
             });
         }
 
-        // TODO: This should not be a variable. Retrieve the object from DB when pushed
-        let  activity = {
+        const  activity = {
             username: taskUser.username,
             userId: taskUser._id,
             taskId: task._id,
@@ -936,16 +935,16 @@ async function createActivity (req, res) {
             date: new Date()
         }
 
-        const activityCreated = await Spaces.findOneAndUpdate (
+        const spaceUpdated = await Spaces.findOneAndUpdate (
             {_id: spaceId},
-            {$push: {activities: activity}});
+            {$push: {activities: activity}},
+            {returnDocument: "after"});
 
-        activity._id = activityCreated._id
+        const activityCreated = spaceUpdated.activities.at(-1)
 
-        console.log({activity})
         res.status(200).send({
             status: "success",
-            activity
+            activity: activityCreated
         });
 
 
