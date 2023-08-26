@@ -310,12 +310,11 @@ async function leaveSpace (req, res) {
             _id: req._id
         };
 
-        const userLeaving = {
-            _id: req.params.userId
-        };
+        const userLeavingId = req.params.userId
+
 
         // Check given JSON parameters
-        if (!userLeaving._id) return res.status(400).send({status: 'fail', message: '_id not provided'});
+        if (!userLeavingId) return res.status(400).send({status: 'fail', message: '_id not provided'});
 
         // Check if space exists.
         const space = await Spaces.findOne({_id: spaceId }, {_id: 0, users: 1});
@@ -336,11 +335,11 @@ async function leaveSpace (req, res) {
         }
 
         // Check if userLeaving exist and is not already deleted
-        const userLeavingExists = space.users.find(u => (u._id.toString() === userLeaving._id) && (!u.isDeleted));
-        if (!userLeavingExists) {
+        const userLeaving = space.users.find(u => (u._id.toString() === userLeavingId) && (!u.isDeleted));
+        if (!userLeaving) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userLeaving.username} is not in this space.`
+                message: `user already left this space.`
             });
         }
 
@@ -349,7 +348,7 @@ async function leaveSpace (req, res) {
         if ((admins.length === 1) && (admins[0]._id.toString() === userLeaving._id)) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${userLeavingExists.username} is last admin. Asing another admin.`
+                message: `user ${userLeaving.username} is last admin. Asing another admin.`
             });
         }
 
@@ -373,7 +372,7 @@ async function leaveSpace (req, res) {
 
         res.status(200).send({
             status: "success",
-            message: `user ${userLeaving._id} left this space`
+            message: `user ${userLeaving.username} left this space`
         });
 
     } catch(err) {
