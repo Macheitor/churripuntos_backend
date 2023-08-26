@@ -58,7 +58,7 @@ async function getSpace (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === req._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${req.username} is not in this space.`
@@ -109,7 +109,7 @@ async function deleteSpace (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -158,7 +158,7 @@ async function updateSpacename (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === req._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${req.username} is not in this space.`
@@ -201,7 +201,7 @@ async function getSpaceUsers (req, res) {
 
         // Check if user is in this space
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -253,7 +253,7 @@ async function joinSpace (req, res) {
 
         // Check if user is in this space
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -327,7 +327,7 @@ async function leaveSpace (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -402,7 +402,7 @@ async function getSpaceAdmins (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -445,7 +445,7 @@ async function createAdmin (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -462,7 +462,7 @@ async function createAdmin (req, res) {
 
         // Check if user to make admin exist
         const userToAdmin = space.users.find(u => u._id.toString() === userToAdminId);
-        if (!userToAdmin) {
+        if (!userToAdmin || userToAdmin.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user to make admin is not in this space.`
@@ -517,7 +517,7 @@ async function deleteAdmin (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `User requesting is not in this space.`
@@ -534,7 +534,7 @@ async function deleteAdmin (req, res) {
 
         // Check if user to make admin exist
         const userToDowngrade = space.users.find(u => u._id.toString() === userToDowngradeId);
-        if (!userToDowngrade) {
+        if (!userToDowngrade || userToDowngrade.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `User to downgrade is is not in this space.`
@@ -543,7 +543,6 @@ async function deleteAdmin (req, res) {
 
         // Check if is the last admin
         const admins = space.users.filter(u => u.isAdmin);
-        console.log(admins)
 
         if (admins.length === 1) {
             return res.status(400).send({
@@ -589,7 +588,7 @@ async function getTasks (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -654,7 +653,7 @@ async function createTask (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -785,7 +784,7 @@ async function updateTask (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -847,7 +846,7 @@ async function getActivities (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not in this space.`
@@ -899,7 +898,7 @@ async function createActivity (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user is not in this space.`
@@ -907,11 +906,11 @@ async function createActivity (req, res) {
         }
 
         // Check if userActivity exists
-        const userActivityExists = space.users.find(u => u._id.toString() === taskUser._id);
-        if (!userActivityExists) {
+        const userActivityDone = space.users.find(u => u._id.toString() === taskUser._id);
+        if (!userActivityDone || userActivityDone.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user who did activity is not in this space.`
+                message: `user ${taskUser.username} is not in this space.`
             });
         }
 
@@ -977,7 +976,7 @@ async function deleteActivity (req, res) {
 
         // Check if user exists
         const userExists = space.users.find(u => u._id.toString() === user._id);
-        if (!userExists) {
+        if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user is not in this space.`
