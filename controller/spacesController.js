@@ -312,7 +312,6 @@ async function leaveSpace (req, res) {
 
         const userLeavingId = req.params.userId
 
-
         // Check given JSON parameters
         if (!userLeavingId) return res.status(400).send({status: 'fail', message: '_id not provided'});
 
@@ -353,7 +352,7 @@ async function leaveSpace (req, res) {
         }
 
         // Check if user is admin  if user === UserLeaving
-        if ((user._id !== userLeaving._id) && (!userExists.isAdmin)) {
+        if ((user._id !== userLeavingId) && (!userExists.isAdmin)) {
             return res.status(400).send({
                 status: `fail`,
                 message: `user ${user.username} is not admin of this space.`
