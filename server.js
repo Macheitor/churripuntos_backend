@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -22,6 +26,7 @@ app.use(express.urlencoded({extended:false}));
 // routes - JWT NO needed
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'));
+app.use('/emailValidation', require('./routes/emailValidation'));
 
 // routes - JWT YES needed
 app.use(authJWT);

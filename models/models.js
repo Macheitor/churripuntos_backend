@@ -25,6 +25,10 @@ const initDb = async () => {
             type: Boolean,
             default: false
         },
+        emailValidationToken: {
+            type: String,
+            required: true
+        },
         refreshToken: [String]
 
     }, {timestamps: true});
