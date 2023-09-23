@@ -1,6 +1,7 @@
 const Users = require('mongoose').model("Users");
 const Spaces = require('mongoose').model("Spaces");
 const {errLogger} = require('../middlewares/logger');
+const utils = require("../utils/sendEmail")
 
 async function getUser (req, res) {
     try {
@@ -81,7 +82,6 @@ async function deleteUser(req, res) {
                 res.status(204).send({
                     status: "success",
                     user: {
-                        username: req.username,
                         _id: req._id
                     }
                 });
@@ -133,6 +133,28 @@ async function emailValidation (req, res) {
     }
 }
 
+async function sendValidationEmail (req, res) {
+
+    try {
+        const userId = req._id
+        if (!userId) return res.status(400).send({ status: "fail", message: "missing _id"});
+    
+        // Check if user exists
+        const user = await Users.findOne({_id:userId});
+        if(!user) return res.status(400).send({ status: "fail", message: "user not found"});
+
+        const success = await utils.sendValidationEmail(user)
+
+        if (success) res.sendStatus(200)
+        else res.sendStatus(500)
+
+     } catch(err) {
+        const error = { status: 'error', message: `${err.name}: ${err.message}` }; 
+        res.status(500).send(error);
+        errLogger(error.message);
+    }
+}
+
 async function updateUsername (req, res) {
     try {
         const userId = req.params.userId
@@ -165,5 +187,6 @@ module.exports = {
     getUserSpaces,
     deleteUser,
     emailValidation,
+    sendValidationEmail,
     updateUsername
 };

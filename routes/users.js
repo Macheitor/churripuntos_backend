@@ -8,8 +8,11 @@ router.route('/')
     // .get(usersController.getAllUsers);
     
 router.route('/:userId')
-.put(usersController.updateUsername)
-.delete(usersController.deleteUser)
+    .put(usersController.updateUsername)
+    .delete(usersController.deleteUser)
+
+router.route('/:userId/sendValidationEmail')
+    .get(usersController.sendValidationEmail)
 
 router.route('/:userId/spaces')
     .get(usersController.getUserSpaces)

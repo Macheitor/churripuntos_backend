@@ -11,7 +11,6 @@ const authJWT = async (req, res, next) => {
     if (token === null) return res.sendStatus(401)
     jwt.verify(token, process.env.DEV_ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) return res.sendStatus(403)
-        req.username = decoded.username;
         req.email = decoded.email;
         req._id = decoded._id;
         next();
@@ -27,23 +26,26 @@ const authentication = async (req, res, next) => {
 
     const email = req.body.email;
     const password = req.body.password;    
-    const username = req.body.username;
 
-    if (!username && !email) return res.status(400).send({ status: "fail", message: errorMsg});
+    if (!email) return res.status(400).send({ status: "fail", message: errorMsg});
     if (!password) return res.status(400).send({ status: "fail", message: errorMsg});
 
     // Check if user exists
-    const userExists = await Users.findOne({$or: [{username}, {email}]});
-    if(!userExists) return res.status(400).send({ status: "fail", message: errorMsg});
+    const user = await Users.findOne({email});
+    if(!user) return res.status(400).send({ status: "fail", message: errorMsg});
 
     // Check if the password is right
-    if (!await bcrypt.compare(password, userExists.password)) {
-        return res.status(400).send({
+    if (!await bcrypt.compare(password, user.password)) {
+        return res.status(403).send({
             status: 'fail',
             message: errorMsg
         })
     }
 
+    req.username = user.username;
+    req.email = user.email;
+    req._id = user._id;
+    req.validated = user.validated
     next();
 }
 

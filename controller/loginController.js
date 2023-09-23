@@ -9,14 +9,9 @@ const jwt = require('jsonwebtoken')
 module.exports = async (req, res) => {
 
     try {
-        const username = req.body.username;
-        const email = req.body.email;
-
-        const userEntry = await Users.findOne({$or: [{username}, {email}]});
 
         const user = {
-            _id: userEntry._id,
-            username: userEntry.username,
+            _id: req._id,
         }
 
         const accessToken = jwt.sign(user, process.env.DEV_ACCESS_TOKEN_SECRET)
@@ -24,8 +19,10 @@ module.exports = async (req, res) => {
         res.status(200).send({
             status: "success",
             user: {
-                _id: user._id,
-                username: user.username,
+                _id: req._id,
+                username: req.username,
+                email:req.email,
+                validated:req.validated,
                 accessToken
             }
         });

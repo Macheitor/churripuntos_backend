@@ -23,7 +23,6 @@ async function createSpace (req, res) {
         // Build user object
         const user = {
             isAdmin: true,
-            username: req.username,
             _id: req._id,
         };
 
@@ -61,7 +60,7 @@ async function getSpace (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${req.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -94,7 +93,6 @@ async function deleteSpace (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -112,7 +110,7 @@ async function deleteSpace (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -120,7 +118,7 @@ async function deleteSpace (req, res) {
         if (!userExists.isAdmin) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not admin of this space.`
+                message: `user is not admin of this space.`
             });
         }
 
@@ -161,7 +159,7 @@ async function updateSpacename (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${req.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -186,7 +184,6 @@ async function getSpaceUsers (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -225,7 +222,6 @@ async function joinSpace (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -306,7 +302,6 @@ async function leaveSpace (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -386,7 +381,6 @@ async function getSpaceAdmins (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -404,7 +398,7 @@ async function getSpaceAdmins (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -427,7 +421,6 @@ async function createAdmin (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -447,7 +440,7 @@ async function createAdmin (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -499,7 +492,6 @@ async function deleteAdmin (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -572,7 +564,6 @@ async function getTasks (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -590,7 +581,7 @@ async function getTasks (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -612,7 +603,6 @@ async function createTask (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -655,7 +645,7 @@ async function createTask (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -692,7 +682,6 @@ async function deleteTask (req, res) {
         const taskId = req.params.taskId
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -710,7 +699,7 @@ async function deleteTask (req, res) {
         if (!userExists) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -747,7 +736,6 @@ async function updateTask (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -786,7 +774,7 @@ async function updateTask (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -830,7 +818,6 @@ async function getActivities (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -848,7 +835,7 @@ async function getActivities (req, res) {
         if (!userExists || userExists.isDeleted) {
             return res.status(400).send({
                 status: `fail`,
-                message: `user ${user.username} is not in this space.`
+                message: `user is not in this space.`
             });
         }
 
@@ -870,7 +857,6 @@ async function createActivity (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
@@ -958,7 +944,6 @@ async function deleteActivity (req, res) {
         const spaceId = req.params.spaceId;
 
         const user = {
-            username: req.username,
             _id: req._id
         };
 
