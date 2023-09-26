@@ -26,7 +26,8 @@ app.use(express.urlencoded({extended:false}));
 // routes - JWT NO needed
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'));
-app.use('/emailValidation', require('./routes/emailValidation'));
+// Route for validating the email token from email button. There is no jwt there
+app.use('/emails', require('./routes/email'));
 
 // routes - JWT YES needed
 app.use(authJWT);

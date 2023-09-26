@@ -6,11 +6,12 @@ const utils = require("../utils/sendEmail")
 async function getUser (req, res) {
     try {
         // Check if userId URL parameter matches the userId inside the jwt
-        if (req.params.userId !== req._id)  return res.status(400).send({status: 'fail', message: 'user not authorized'});
+        if (req.params.userId !== req._id) return res.sendStatus(401)
 
-        // Search for the user
-        const user = await Users.findOne({_id: req.params.userId});
-
+        // Search for the user. Return parameters when you need them
+        const user = await Users.findOne({_id: req.params.userId}, {_id: 0, validated: 1});
+        if (!user) return res.sendStatus(404)
+        
         // Return the user
         res.status(200).send({
             status: "success",

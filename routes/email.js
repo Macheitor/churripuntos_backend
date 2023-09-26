@@ -3,9 +3,9 @@ const router = express.Router();
 
 // TODO: rething this controller, now i'm feeling lazy and have tons of other prio things to do
 
-const usersController = require('../controller/usersController');
+const usersController = require('../controller/emailsController');
 
-router.route('/:userId/token/:emailValidationToken')
-.get(usersController.emailValidation)
+router.route('/:userId/token/:token')
+  .get(usersController.checkEmailValidation)
 
 module.exports = router;

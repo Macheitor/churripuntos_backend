@@ -4,10 +4,10 @@ const router = express.Router();
 const usersController = require('../controller/usersController');
 
 router.route('/')
-    .get(usersController.getUser)
-    // .get(usersController.getAllUsers);
-    
+// .get(usersController.getAllUsers);
+
 router.route('/:userId')
+    .get(usersController.getUser)
     .put(usersController.updateUsername)
     .delete(usersController.deleteUser)
 
