@@ -16,8 +16,11 @@ app.use(reqLogger)
 
 // Cross Origin Resource Sharing
 // app.use(cors(require('./config/corsOptions')))
-app.use(cors());
-app.options('*', cors());
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions));
 
 // Built-in middleware for json
 app.use(express.json());
