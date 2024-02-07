@@ -1,5 +1,5 @@
 // Cross Origin Resource Sharing
-const whitelist = ['https://www.myWebsite.com']
+const whitelist = ['https://churripuntos-frontend.vercel.app/']
 
 if (process.env.NODE_ENV !== 'production') {
     whitelist.push(
