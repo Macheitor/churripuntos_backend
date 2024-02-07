@@ -15,7 +15,9 @@ require('./models/models.js')();
 app.use(reqLogger)
 
 // Cross Origin Resource Sharing
-app.use(cors(require('./config/corsOptions')))
+// app.use(cors(require('./config/corsOptions')))
+app.use(cors());
+app.options('*', cors());
 
 // Built-in middleware for json
 app.use(express.json());
