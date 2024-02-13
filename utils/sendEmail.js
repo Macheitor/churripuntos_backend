@@ -6,7 +6,7 @@ const {errLogger} = require('../middlewares/logger');
 
 
 async function sendValidationEmail(user) {
-    const validationLink = `${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}/emails/${user._id}/token/${user.emailValidationToken}`
+    const validationLink = `${process.env.FRONTEND_HOST}/emails/${user._id}/token/${user.emailValidationToken}`
     const toEmail = (process.env.NODE_ENV === 'production' ? user.email : process.env.EMAIL_TO)
     
     const nodemailer = require('nodemailer')
